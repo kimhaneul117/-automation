@@ -1,0 +1,49 @@
+newman:
+  stage: newman
+  tags:
+    - Newman
+  variables:
+    NEWMAN_COLLECTION: 'APMall_STG_APIAutoTEST_v1.8.0.postman_collection'
+    NEWMAN_ENV: 'APMall_STG_APIAutoTEST_v1.8.0.postman_environment'
+  script:
+    - |
+        NOW=$(date "+%Y%m%d-%H%M%S")
+        REPORT_PATH=reporter/API-Test-${NOW}.html
+    - newman run -x ${NEWMAN_COLLECTION}.json -e ${NEWMAN_ENV}.json -r cli,htmlextra --reporter-htmlextra-export ${REPORT_PATH} --reporter-htmlextra-showOnlyFails
+    - |
+        FAILS=`grep -A1 '<h6 class="text-uppercase">Total Failed Tests</h6>' ${REPORT_PATH} | tail -n 1 | sed -e 's/<h1 class="display-.*">//' -e 's/<\/h1>//' | sed 's/^ *//g'`
+        if [ ${FAILS} -gt 0 ]; then
+          RESULT=FAIL
+        else
+          RESULT=PASS
+        fi
+        echo "API Test 결과는 ${RESULT} 입니다. 총 Fail 은 ${FAILS} 개 입니다."
+        mv reporter/API-Test-${NOW}.html reporter/API-Test-${NOW}-${RESULT}.html
+        NEW_REPORT_PATH=reporter/API-Test-${NOW}-${RESULT}.html
+    - echo ISSUE_KEY is ${ISSUE_KEY}
+    - |
+        curl \
+          -H "Authorization: Bearer ${JIRA_TOKEN}" \
+          -H "Content-Type: application/json" \
+          -X PUT \
+          --data "{\"update\":{\"customfield_14500\": [{\"set\": {\"value\": \"${RESULT}\"}}]}}" \
+          ${JIRA_BASE_URL}/rest/api/2/issue/${ISSUE_KEY}
+    - |
+        curl \
+          -H "Authorization: Bearer ${JIRA_TOKEN}" \
+          -H "X-Atlassian-Token: nocheck" \
+          -X POST \
+          -F "file=@${CI_PROJECT_DIR}/${NEW_REPORT_PATH}" \
+          ${JIRA_BASE_URL}/rest/api/2/issue/${ISSUE_KEY}/attachments
+    - |
+        if [ ${RESULT} = "FAIL" ]; then
+          exit 1
+        fi
+  rules:
+    - if: $ISSUE_KEY == null
+      when: never
+    - when: on_success
+
+stages:
+  - newman
+
