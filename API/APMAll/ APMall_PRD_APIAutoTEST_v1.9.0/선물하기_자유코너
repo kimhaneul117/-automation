@@ -1,0 +1,365 @@
+// URL 가져와 코너 아이디 변수 저장
+const requestData = pm.request.url.getPathWithQuery().split('?')
+const requestcornerId = (requestData[1].split('&'))[0].split('=')[1]
+
+/**********     Assertion     **********/
+
+// 선물하기 자유코너-상품형 노출 상태
+if (responseBody.length !== 0) {
+    // Response Body Data를 "jsonData" 변수에 저장
+    var jsonData = JSON.parse(responseBody);
+
+    pm.test("코너아이디(cornerId) 정상 출력", function () {
+        pm.expect(jsonData.cornerId).to.be.a('String')
+        pm.expect(jsonData.cornerId).to.be.include("GIFT")
+        pm.expect(jsonData.cornerId).to.eql(requestcornerId)
+    })
+
+    pm.test("코너명(conerNmae) 정상 출력", function () {
+        try {
+            pm.expect(jsonData.cornerName === null).to.be.true;
+        } catch {
+            pm.expect(jsonData.cornerName).to.not.be.null
+            pm.expect(jsonData.cornerName).to.be.include('선물')
+            pm.expect(jsonData.cornerName).to.be.a('String')
+        }
+    })
+
+    // 고정 1, 2번을 제외한 나머지 코너 순서 중에 노출
+    pm.test("코너 순서(cornerOrder) 정상 출력", function () {
+        pm.expect(jsonData.cornerOrder).to.not.be.null
+        pm.expect(jsonData.cornerOrder).to.be.a('Number')
+        pm.expect(jsonData.cornerOrder).to.have.within(3, 5);
+    })
+
+    jsonData.onlineProducts.forEach((op, i) => {
+        if (op.length >= 5) {
+            pm.test("상품 최소 5개 이상 출력 확인", function () {
+                // pm.expect(op).to.have.lengthOf.at.least(5);
+                pm.expect(op.length).to.be.at.least(5)
+            })
+
+            
+
+            pm.test("자유코너 - 상품형_온라인 상품번호(onlineProdSn)_" + [i + 1] + "정상출력", function () {
+                pm.expect(op.onlineProdSn).to.not.be.null
+                pm.expect(op.onlineProdSn).to.be.a('Number')
+                pm.expect(op.onlineProdSn.toString().length).within(4, 5)
+            })
+
+            pm.test("자유코너 - 상품형_온라인 상품코드(onlineProdCode)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(op.onlineProdCode).to.not.be.null;
+                pm.expect(op.onlineProdCode).to.be.a('Number')
+                pm.expect(op.onlineProdCode.toString().length).to.be.eql(12)
+            })
+
+            pm.test("온라인 상품명(onlineProdName) 정상 출력_" + [i + 1], function () {
+                pm.expect(op.onlineProdName).to.be.not.null
+                pm.expect(op.onlineProdName).to.be.a('String')
+                pm.expect(op.onlineProdName.toString().length).at.least(1)
+            })
+
+            pm.test("브랜드일련번호(brandSn) 정상 출력_" + [i + 1], function () {
+                pm.expect(op.brandSn).to.not.be.null
+                pm.expect(op.brandSn).to.be.a('Number')
+                pm.expect(op.brandSn.toString().length).at.least(2)
+            })
+
+            pm.test("브랜드이름(brandName) 정상출력_" + [i + 1], function () {
+                pm.expect(op.brandName).to.not.be.null
+                pm.expect(op.brandName).to.be.a('string')
+                pm.expect(op.brandName.toString().length).at.least(1)
+            })
+
+            pm.test("온라인상품대표이미지(imgUrl) 정상 출력_" + [i + 1], function () {
+                try {
+                    pm.expect(op.imgUrl).to.be.null
+                } catch {
+                    pm.expect(op.imgUrl).to.not.be.null
+                    pm.expect(op.imgUrl).to.be.a('string')
+                    pm.expect(op.imgUrl).to.be.include("https://images-kr.amoremall.com/")
+                }
+            })
+
+            pm.test("온라인상품대표정가(standardPrice) 정상 출력_" + [i + 1], function () {
+                pm.expect(op.standardPrice).to.not.be.null
+                pm.expect(op.standardPrice).to.be.a('Number')
+                pm.expect(op.standardPrice).at.least(100)
+            })
+
+            pm.test("온라인상품 대표 최종 할인 적용가discountedPrice) 정상 출력_" + [i + 1], function () {
+                pm.expect(op.discountedPrice).to.not.be.null
+                pm.expect(op.discountedPrice).to.be.a('Number')
+                pm.expect(op.discountedPrice).at.least(1000)
+            })
+
+            pm.test("자유코너 - 상품형_라인상품 최종 판매/전시 상태(saleDisplayStatus)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(op.saleDisplayStatus).to.not.be.null;
+                pm.expect(op.saleDisplayStatus).to.be.a('String')
+                pm.expect(op.saleDisplayStatus).to.be.oneOf(["OnSale", "Exhaustion", "OutOfStock", "WaitingSale", "EndSale", "SuspendSale", "WaitingDisplay", "EndDisplay", "PermanentEnd"])
+            })
+
+            pm.test("자유코너 - 상품형_M+N 프로모션 적용 대상 상품일 경우, 기본구매 수량(M)(baseOrdQty)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(op.baseOrdQty).to.not.be.null;
+                pm.expect(op.baseOrdQty).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_M+N 프로모션 적용 대상 상품일 경우, 추가 증정 수량(N)(freeAwardQty)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(op.freeAwardQty).to.not.be.null;
+                pm.expect(op.freeAwardQty).to.be.a('Number')
+            })
+
+            try {
+                pm.expect(op.flags == null).to.be.true
+            } catch {
+                op.flags.forEach((flag, j) => {
+                    pm.test("자유코너 - 상품형_플래그(flags)_" + [j + 1] + " 정상 출력", function () {
+                        pm.expect(flag.code).to.be.oneOf(["icon_exc_sale", "icon_new", "icon_strong_rec", "icon_payback", "icon_award_gift", "icon_award_giftcard", "icon_reco_pacificshop"])
+                        pm.expect(flag.name).to.be.oneOf(["EXCLUSIVE", "NEW", "MD추천", "페이백", "사은품", "기프트카드", "퍼시픽샵"])
+                        pm.expect(flag.notPacificShop).to.be.a('boolean')
+                    })
+
+                    switch (flag.code) {
+                        case 'icon_exc_sale':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("EXCLUSIVE")
+                            });
+                            break;
+                        case 'icon_new':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("NEW")
+                            });
+                            break;
+                        case 'icon_strong_rec':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("MD추천")
+                            });
+                            break;
+                        case 'icon_payback':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("페이백")
+                            });
+                            break;
+                        case 'icon_award_gift':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("사은품")
+                            });
+                            break;
+                        case 'icon_award_giftcard':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("기프트카드")
+                            });
+                            break;
+                        case 'icon_reco_pacificshop':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("퍼시픽샵")
+                            });
+                            break;
+                        default:
+                            false
+                            break;
+                    }
+                })
+            }
+        } //if 끝
+    })
+
+    for (var i = 0; i < jsonData.onlineProducts.length; i++) {
+        // 상품이 5개 이상일 경우에만 해당 코너 전시
+        if (jsonData.onlineProducts.length >= 5) {
+            pm.test("상품 최소 5개 이상 출력 확인", function () {
+                pm.expect(jsonData.onlineProducts).to.have.lengthOf.at.least(5);
+            })
+
+            pm.test("자유코너 - 상품형_온라인 상품번호(onlineProdSn)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].onlineProdSn).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].onlineProdSn).to.be.a('Number')
+                pm.expect(jsonData.onlineProducts[i].onlineProdSn.toString()).to.have.lengthOf.within(4, 5);
+            })
+
+            pm.test("자유코너 - 상품형_온라인 상품코드(onlineProdCode)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].onlineProdCode).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].onlineProdCode.toString()).to.be.length(12)
+            })
+
+            pm.test("자유코너 - 상품형_온라인 상품명(onlineProdName)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].onlineProdName).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].onlineProdName).to.be.a('String')
+            })
+
+            pm.test("자유코너 - 상품형_브랜드 일련번호(brandSn)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].brandSn).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].brandSn).to.be.a('Number')
+                pm.expect(jsonData.onlineProducts[i].brandSn.toString()).to.have.lengthOf.within(1, 3);
+            })
+
+            pm.test("자유코너 - 상품형_브랜드 이름 (한글)(brandName)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].brandName).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].brandName).to.be.a('String')
+            })
+
+            pm.test("자유코너 - 상품형_온라인상품 대표 이미지(imgUrl)_" + [i + 1] + " 정상 출력", function () {
+                try {
+                    pm.expect(jsonData.onlineProducts[i].imgUrl === "").to.be.true;
+                } catch {
+                    pm.expect(jsonData.onlineProducts[i].imgUrl).to.not.be.null;
+                    pm.expect(jsonData.onlineProducts[i].imgUrl).to.be.a('String')
+                    pm.expect(jsonData.onlineProducts[i].imgUrl).to.include("https://images-kr.amoremall.com")
+                }
+            })
+
+            pm.test("자유코너 - 상품형_온라인상품 대표 정가(standardPrice)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].standardPrice).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].standardPrice).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_온라인상품 대표 최종 할인적용가(discountedPrice)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].discountedPrice).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].discountedPrice).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_라인상품 최종 판매/전시 상태(saleDisplayStatus)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].saleDisplayStatus).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].saleDisplayStatus).to.be.a('String')
+                pm.expect(jsonData.onlineProducts[i].saleDisplayStatus).to.be.oneOf(["OnSale", "Exhaustion", "OutOfStock", "WaitingSale", "EndSale", "SuspendSale", "WaitingDisplay", "EndDisplay", "PermanentEnd"])
+            })
+
+            pm.test("자유코너 - 상품형_M+N 프로모션 적용 대상 상품일 경우, 기본구매 수량(M)(baseOrdQty)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].baseOrdQty).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].baseOrdQty).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_M+N 프로모션 적용 대상 상품일 경우, 추가 증정 수량(N)(freeAwardQty)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].freeAwardQty).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].freeAwardQty).to.be.a('Number')
+            })
+
+            try {
+                pm.expect(jsonData.onlineProducts[i].flags == null).to.be.true
+            } catch {
+                jsonData.onlineProducts[i].flags.forEach((flag, j) => {
+                    pm.test("자유코너 - 상품형_플래그(flags)_" + [j + 1] + " 정상 출력", function () {
+                        pm.expect(flag.code).to.be.oneOf(["icon_exc_sale", "icon_new", "icon_strong_rec", "icon_payback", "icon_award_gift", "icon_award_giftcard", "icon_reco_pacificshop"])
+                        pm.expect(flag.name).to.be.oneOf(["EXCLUSIVE", "NEW", "MD추천", "페이백", "사은품", "기프트카드", "퍼시픽샵"])
+                        pm.expect(flag.notPacificShop).to.be.a('boolean')
+                    })
+
+                    switch (flag.code) {
+                        case 'icon_exc_sale':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("EXCLUSIVE")
+                            });
+                            break;
+                        case 'icon_new':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("NEW")
+                            });
+                            break;
+                        case 'icon_strong_rec':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("MD추천")
+                            });
+                            break;
+                        case 'icon_payback':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("페이백")
+                            });
+                            break;
+                        case 'icon_award_gift':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("사은품")
+                            });
+                            break;
+                        case 'icon_award_giftcard':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("기프트카드")
+                            });
+                            break;
+                        case 'icon_reco_pacificshop':
+                            pm.test("자유코너 - 상품형_플래그 정보(flags) 정상출력" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("퍼시픽샵")
+                            });
+                            break;
+                        default:
+                            false
+                            break;
+                    }
+                })
+            }
+
+            pm.test("자유코너 - 상품형_작성된 총 리뷰 개수(reviewCount)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].reviewCount).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].reviewCount).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_리뷰 평균 점수(reviewAverage)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].reviewAverage).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].reviewAverage).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_좋아요 번호(likeTargetNo)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].likeTargetNo).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].likeTargetNo).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_온라인상품 대표 최종 할인율(discountRate)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].discountRate).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].discountRate).to.be.a('Number')
+            })
+
+            pm.test("자유코너 - 상품형_대표 단위상품의 이중가표기여부(isDiscount)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].isDiscount).to.be.oneOf([true, false])
+            })
+
+            pm.test("자유코너 - 상품형_최종 할인적용가 이상의 단위상품 존재 여부(isSwungDash)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].isSwungDash).to.be.oneOf([true, false])
+            })
+
+            pm.test("자유코너 - 상품형_뷰티포인트 교환 상품 여부(isBeautyPoint)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].isBeautyPoint).to.be.oneOf([true, false])
+            })
+
+            pm.test("자유코너 - 상품형_회원별 좋아요한 상품 설정 여부(isLike)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].isLike).to.be.oneOf([true, false])
+            })
+
+            pm.test("자유코너 - 상품형_바로구매 전용 여부(isBuyNowOnly)_" + [i + 1] + " 정상 출력", function () {
+                pm.expect(jsonData.onlineProducts[i].isBuyNowOnly).to.be.oneOf([true, false])
+            })
+        } else {
+            pm.expect.fail('자유코너 - 상품형_온라인 상품 목록(onlineProducts) 미 출력=' + jsonData.freeProduct.onlineProducts.length);
+        }
+    }
+
+    // 더 보기 버튼 사용 시 Respones Data 확인
+    if (jsonData.viewMoreButtonYn == "Y") {
+        pm.test("자유코너 - 상품형_더보기버튼명(viewMoreButtonName) 정상 출력", function () {
+            pm.expect(jsonData.viewMoreButtonName).to.not.be.null;
+            pm.expect(jsonData.viewMoreButtonName).to.be.a('String')
+            pm.expect(jsonData.viewMoreButtonName).to.have.lengthOf.most(7);
+        })
+
+        pm.test("자유코너 - 상품형_더보기버튼링크(viewMoreButtonUrl) 정상 출력", function () {
+            pm.expect(jsonData.viewMoreButtonUrl).to.include('https://www.amoremall.com')
+        })
+        // 더 보기 버튼 미사용 시 Respones Data 확인
+    } else if (jsonData.viewMoreButtonYn == "N") {
+        pm.test("자유코너 - 상품형_더보기버튼명(viewMoreButtonName) 정상 출력", function () {
+            pm.expect(jsonData.viewMoreButtonName).to.be.null;
+        })
+
+        pm.test("자유코너 - 상품형_더보기버튼링크(viewMoreButtonUrl) 정상 출력", function () {
+            pm.expect(jsonData.viewMoreButtonUrl).to.be.null;
+        })
+    }
+
+    pm.test("자유코너 - 상품형_콘텐츠 타이틀(title) 정상 출력", function () {
+        pm.expect(jsonData.title).to.not.be.null;
+        pm.expect(jsonData.title).to.be.a('String')
+    })
+    // 선물하기 자유코너-상품형 미노출 상태일 시
+} else {
+    pm.test("선물하기 자유코너-상품형 미 노출 상태 확인", function () {
+        pm.response.to.have.body('');
+    })
+}

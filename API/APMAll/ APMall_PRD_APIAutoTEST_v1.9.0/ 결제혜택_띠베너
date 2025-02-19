@@ -1,0 +1,83 @@
+// URL 가져와 코너 아이디 변수 저장
+const requestData = pm.request.url.getPathWithQuery().split('?')
+const requestcornerId = (requestData[1].split('&'))[0].split('=')[1]
+
+/**********     Assertion     **********/
+
+// 결제혜택_띠배너 노출 상태
+if (responseBody.length !== 0) {
+    // Response Body Data를 "jsonData" 변수에 저장
+    var jsonData = JSON.parse(responseBody);
+
+    pm.test("띠배너 최소 2개 ~ 최대 10개 출력 확인", function () {
+        pm.expect(jsonData.banners).to.have.lengthOf.within(2, 10);
+    })
+
+    pm.test("코너아이디(cornerId) 정상 출력", function () {
+        pm.expect(jsonData.cornerId).to.eql(requestcornerId)
+    })
+
+    pm.test("코너명(conerNmae) 정상 출력", function () {
+        try {
+            pm.expect(jsonData.cornerName === null).to.be.true;
+        } catch {
+            pm.expect(jsonData.cornerName).to.be.a('String')
+        }
+    })
+
+    // 고정 1, 2번을 제외한 나머지 코너 순서 중에 노출
+    pm.test("코너 순서(cornerOrder) 정상 출력", function () {
+        pm.expect(jsonData.cornerOrder).to.have.within(3, 18);
+    })
+
+    jsonData.banners.forEach((banner, i) => {
+        pm.test("모바일배너이미지경로(mobileBannerImageUrl)_" + [i + 1] + " 정상 출력", function () {
+            pm.expect(banner.mobileBannerImageUrl).to.not.be.null;
+            pm.expect(banner.mobileBannerImageUrl).to.be.a('String')
+            pm.expect(banner.mobileBannerImageUrl).to.include("https://stg-images-kr.amoremall.com")
+        })
+
+        pm.test("모바일배너대체텍스트(mobileBannerReplaceText)_" + [i + 1] + " 정상 출력", function () {
+            try { // 텍스트 미입력 시 NULL 처리
+                pm.expect(banner.mobileBannerReplaceText === null).to.be.true;
+            } catch {
+                pm.expect(banner.mobileBannerReplaceText).to.not.be.null;
+                pm.expect(banner.mobileBannerReplaceText).to.be.a('String')
+            }
+        })
+
+        pm.test("PC배너이미지경로(pcBannerImageUrl)_" + [i + 1] + " 정상 출력", function () {
+            try {
+                pm.expect(banner.pcBannerImageUrl === "").to.be.true;
+            } catch {
+                pm.expect(banner.pcBannerImageUrl).to.not.be.null;
+                pm.expect(banner.pcBannerImageUrl).to.be.a('String')
+                pm.expect(banner.pcBannerImageUrl).to.include("https://stg-images-kr.amoremall.com")
+            }
+        })
+
+        pm.test("PC배너대체텍스트(pcBannerReplaceText)_" + [i + 1] + " 정상 출력", function () {
+            try {
+                pm.expect(banner.pcBannerReplaceText === null).to.be.true;
+            } catch {
+                pm.expect(banner.pcBannerReplaceText).to.not.be.null;
+                pm.expect(banner.pcBannerReplaceText).to.be.a('String')
+            }
+        })
+
+        pm.test("링크URL(linkUrl)_" + [i + 1] + " 정상 출력", function () {
+            pm.expect(banner.linkUrl).to.not.be.null;
+            const url = banner.linkUrl.split('/', 3)[2]
+            pm.expect(url).to.oneOf(['www.naver.com', 'www-ecp-stgrenew.amoremall.com', 'www.amoremall.com'])
+        })
+
+        pm.test("배경색상(backgroundColor)_" + [i + 1] + " 정상 출력", function () {
+            pm.expect(banner.backgroundColor).to.be.a('String')
+        })
+    })
+// 결제혜택_띠배너 미노출 상태
+} else {
+    pm.test("결제혜택_띠배너 미노출 상태 확인", function () {
+        pm.response.to.have.body('');
+    })
+}
