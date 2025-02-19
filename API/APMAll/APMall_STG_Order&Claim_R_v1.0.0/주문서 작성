@@ -1,0 +1,35 @@
+// Response Body Data를 "jsonData" 변수에 저장
+var jsonData = pm.response.json();
+
+// Environments에 변수 저장
+pm.environment.set("ordSn", jsonData.ordSn);
+pm.environment.set("ordNo", jsonData.ordNo);
+pm.environment.set('payAmt', jsonData.ordHistEx.finalPamtPcur)
+
+/***************************************/
+/**********   Assertion   **********/
+/***************************************/
+
+// 결제금액 확인
+pm.test("결제금액 정상 출력"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(7500)
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(parseInt(pm.environment.get('payAmt')))
+})
+
+// 상품 확인
+const prodSns_res = []
+jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
+    if(ordHistProdEx.ordHistProdTypeCode === "Ord") {
+        prodSns_res.push(ordHistProdEx.ordProdEx.prodSn)
+    }
+})
+console.log(prodSns_res)
+
+const prodSns_env = []
+prodSns_env.push(JSON.parse(pm.environment.get('온라인상품A')).prodSn)
+console.log(prodSns_env)
+
+pm.test("상품 정상 출력 확인 : 온라인상품A"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(prodSns_res).to.have.members(prodSns_env)
+});
+

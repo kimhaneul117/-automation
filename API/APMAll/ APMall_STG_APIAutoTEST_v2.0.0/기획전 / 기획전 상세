@@ -1,0 +1,527 @@
+// URL 가져와 코너 아이디 변수 저장
+const requestData = pm.request.url.getPathWithQuery().split('/')
+
+// Response Body Data를 "jsonData" 변수에 저장
+var jsonData = JSON.parse(responseBody);
+
+// 오늘 날짜 구하기
+var nowYMD = parseInt(require('moment')().format("YYYYMMDD"))
+
+/**********     Assertion     **********/
+
+// AllMember (회원전체), Employee (임직원전용), FirstPur (생애첫구매), MemberLevel (회원등급지정), MembershipLevel (회원멤버십등급), MemberDesignated (회원수동지정), MyShop (마이샵회원), NonPur (최근미구매), PeriodPur (기간내첫구매), PayMember (유료회원전용), DesignatedMember (대상회원 수동지정)
+pm.test("대상회원코드(tgtMemberCode) 정상 출력", function () {
+    pm.expect(jsonData.tgtMemberCode).to.oneOf(["AllMember", "Employee", "FirstPur", "MemberLevel", "MembershipLevel", "MemberDesignated", "MyShop", " NonPur", "PeriodPur", "PayMember", "DesignatedMember"])
+})
+
+pm.test("노출 대상 여부(displayTgtYn) 정상 출력", function () {
+    pm.expect(jsonData.displayTgtYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("참여 대상 여부(participateTgtYn) 정상 출력", function () {
+    pm.expect(jsonData.participateTgtYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("일시중지 여부(suspendYn) 정상 출력", function () {
+    pm.expect(jsonData.suspendYn).to.eql("N")
+})
+
+pm.test("Pc Web 전시 여부(pcWebDisplayYn) 정상 출력", function () {
+    pm.expect(jsonData.pcWebDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("MO Web 전시 여부(mobileWebDisplayYn) 정상 출력", function () {
+    pm.expect(jsonData.mobileWebDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("MO APP 전시 여부(mobileAppDisplayYn) 정상 출력", function () {
+    pm.expect(jsonData.mobileAppDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("진행상태(displayStatus) 정상 출력", function () {
+    pm.expect(jsonData.displayStatus).to.be.a('string')
+    pm.expect(jsonData.displayStatus).to.eql("Progress")
+})
+
+pm.test("행사참여가능여부(participantYn) 정상 출력", function () {
+    pm.expect(jsonData.participantYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("기획전 일련번호(planDisplaySn) 정상 출력", function () {
+    pm.expect(jsonData.planDisplaySn).to.not.be.null
+    pm.expect(jsonData.planDisplaySn).to.eql(parseInt((requestData)[6]))
+    pm.expect(jsonData.planDisplaySn.toString().length).to.be.eql(4)
+})
+
+// URL 링크, 일반 구성 기획 전시, 동시 구매 기획 전시, 동영상 구성 기획 전시 유형 중 설정 가능
+pm.test("기획전시유형코드 (PlanDisplayType) 정상 출력", function () {
+    pm.expect(jsonData.planDisplayTypeCode).to.not.be.null
+    pm.expect(jsonData.planDisplayTypeCode).to.be.a('string')
+    pm.expect(jsonData.planDisplayTypeCode).to.be.oneOf(["General", "Link", "SameTimePur", "Video"])
+})
+
+pm.test("새창여부(newWindowYn) 정상 출력", function () {
+    pm.expect(jsonData.newWindowYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("상세페이지 아이디(detailPageId) 정상 출력", function () {
+    pm.expect(jsonData.detailPageId).to.not.be.null
+    pm.expect(jsonData.detailPageId).to.be.a('string')
+})
+
+const nStartDt = jsonData.startDt.split('T')
+const nStartDt_date = parseInt((nStartDt[0].split(','))[0].replace(/-/g, ''))
+const nEndDt = jsonData.endDt.split('T')
+const nEndDt_date = parseInt((nEndDt[0].split(','))[0].replace(/-/g, ''))
+console.log(nStartDt_date)
+console.log(nEndDt_date)
+
+// 진행 상태 End가 아닐 경우
+if (jsonData.displayStatus != "End") {
+    pm.test("기획전시 시작일시 ~ 기획전시 종료일시 사이에 오늘 날짜("+nowYMD+") 확인", function () {
+        pm.expect(nowYMD).to.be.within(nStartDt_date, nEndDt_date);
+    })
+}
+
+pm.test("기획전시 시작일시(startDt) 정상 출력", function () {
+    pm.expect(jsonData.startDt).to.not.be.null
+    pm.expect(jsonData.startDt).to.be.a('string')
+    pm.expect(jsonData.startDt.toString().length).to.be.at.least(8)
+})
+
+pm.test("기획전시 종료일시(endDt) 정상 출력", function () {
+    pm.expect(jsonData.endDt).to.not.be.null
+    pm.expect(jsonData.endDt).to.be.a('string')
+    pm.expect(jsonData.endDt.toString().length).to.be.at.least(8)
+})
+
+pm.test("임직원전용여부(employeeOnlyYn) 정상 출력", function () {
+    pm.expect(jsonData.employeeOnlyYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("공용사용여부(shareUseYn) 정상 출력", function () {
+    pm.expect(jsonData.shareUseYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("SNS연계 제목(snsIfTitle) 정상 출력", function () {
+    pm.expect(jsonData.snsIfTitle).to.not.be.null
+    pm.expect(jsonData.snsIfTitle).to.be.a('String')
+})
+
+pm.test("SNS연계 설명(snsIfDesc) 정상 출력", function () {
+    pm.expect(jsonData.snsIfDesc).to.not.be.null
+    pm.expect(jsonData.snsIfDesc).to.be.a('string')
+})
+
+pm.test("SNS해시태그(snsHashTag) 정상 출력", function () {
+    pm.expect(jsonData.snsHashTag).to.not.be.null
+    pm.expect(jsonData.snsHashTag).to.be.a('string')
+})
+
+pm.test("검색태그(searchTag) 정상 출력", function () {
+    pm.expect(jsonData.searchTag).to.not.be.null
+    pm.expect(jsonData.searchTag).to.be.a('string')
+});
+
+pm.test("상품그룹전시방식코드(prodGrpDisplayMethodCode) 정상 출력", function () {
+    pm.expect(jsonData.prodGrpDisplayMethodCode).to.be.oneOf(["List", "Tab"])
+})
+
+pm.test("행사포함여부(eventIncludeYn) 정상 출력", function () {
+    pm.expect(jsonData.eventIncludeYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("이벤트참여방법표시여부(evntPrtpMthdMkYn) 정상 출력", function () {
+    pm.expect(jsonData.evntPrtpMthdMkYn).to.be.oneOf(["Y", "N"])
+});
+
+// Button- 참여버튼형 , Comment - 참여댓글형
+pm.test("행사유형(eventType) 정상 출력", function () {
+    pm.expect(jsonData.eventType).to.eql("Comment")
+});
+
+// event Response Data 확인
+pm.test("행사 시작일시(startDt) 정상 출력", function () {
+    pm.expect(jsonData.event.startDt).to.not.be.null
+    pm.expect(jsonData.event.startDt).to.be.a('string')
+    pm.expect(jsonData.event.startDt.toString().length).to.be.at.least(8)
+});
+
+pm.test("행사 종료일시(endDt) 정상 출력", function () {
+    pm.expect(jsonData.event.endDt).to.not.be.null
+    pm.expect(jsonData.event.endDt).to.be.a('string')
+    pm.expect(jsonData.event.endDt.toString().length).to.be.at.least(8)
+});
+
+// Immed - 참여즉시당첨 , End - 종료후당첨선정
+pm.test("당첨자선정방식코드(winnerSelectMethodCode) 정상 출력", function () {
+    pm.expect(jsonData.event.winnerSelectMethodCode).to.oneOf(["Immed", "End"])
+});
+
+pm.test("참여자수노출여부(participatedCntExpsYn) 정상 출력", function () {
+    pm.expect(jsonData.event.participatedCntExpsYn).to.be.oneOf(["Y", "N"])
+});
+
+pm.test("참여자누적수(eventParticipantCount) 정상 출력", function () {
+    pm.expect(jsonData.event.eventParticipantCount).to.be.at.least(0)
+});
+
+pm.test("쇼핑마킹수(shoppingMarkCnt) 정상 출력", function () {
+    pm.expect(jsonData.shoppingMarkCnt).to.not.be.null
+    pm.expect(jsonData.shoppingMarkCnt).to.be.a('Number')
+    pm.expect(jsonData.shoppingMarkCnt).to.be.at.least(0)
+});
+
+pm.test("쇼핑마킹 회원일련번호 수(shoppingMarkMemberSnCnt) 정상 출력", function () {
+    pm.expect(jsonData.shoppingMarkMemberSnCnt).to.not.be.null
+    pm.expect(jsonData.shoppingMarkMemberSnCnt).to.be.a('Number')
+    pm.expect(jsonData.shoppingMarkMemberSnCnt).to.be.at.least(0)
+})
+
+pm.test("안내문 펼침여부(guideUnrollYn) 정상 출력", function () {
+    pm.expect(jsonData.guideUnrollYn).to.be.oneOf(["Y", "N"])
+});
+
+pm.test("관련브랜드 바로 가기 전시여부(relationBrandShortcutDisplayYn) 정상 출력", function () {
+    pm.expect(jsonData.relationBrandShortcutDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("FO안내(foGuide) 정상 출력", function () {
+    pm.expect(jsonData.foGuide).to.not.be.null
+    pm.expect(jsonData.foGuide).to.include('https://stg-images-kr.amoremall.com/dsp-stg-upload-amt/fileupload/2024/03/14/메인베너_진.jpg')
+});
+
+pm.test("상세HTML(detailHtml) 정상 출력", function () {
+    // 미 설정인 경우 null값 처리   
+    try {
+        pm.expect(jsonData.detailHtml).to.be.null
+    } catch {
+        pm.expect(jsonData.detailHtml).to.not.be.null
+        pm.expect(jsonData.detailHtml).to.be.a('string')
+    }
+});
+
+pm.test("SNS연계 이미지경로(snsIfImg) 정상 출력", function () {
+    // 미 설정인 경우 null값 처리
+    try {
+        pm.expect(jsonData.snsIfImg).to.be.null
+    } catch {
+        pm.expect(jsonData.snsIfImg).to.not.be.null
+        pm.expect(jsonData.snsIfImg).to.be.a('string')
+    }
+})
+
+pm.test("목록배너이미지M1(bannerImgM1) 정상 출력", function () {
+    pm.expect(jsonData.bannerImgM1).to.be.include("https://stg-images-kr.amoremall.com")
+})
+
+pm.test("목록배너이미지M1(bannerImgM2) 정상 출력", function () {
+    try {
+        pm.expect(jsonData.bannerImgM2).to.be.null
+    } catch {
+        pm.expect(jsonData.bannerImgM2).to.not.be.null
+        pm.expect(jsonData.bannerImgM2).to.be.a('string')
+        pm.expect(jsonData.bannerImgM2).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("목록배너이미지P1(bannerImgP1) 정상 출력", function () {
+    try {
+        pm.expect(jsonData.bannerImgP1).to.be.null
+    } catch {
+        pm.expect(jsonData.bannerImgP1).to.not.be.null
+        pm.expect(jsonData.bannerImgP1).to.be.a('string')
+        pm.expect(jsonData.bannerImgP1).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("그룹상세HTML(detailHtml) 정상 출력", function () {
+    try {
+        pm.expect(jsonData.detailHtml).to.be.null
+    } catch {
+        pm.expect(jsonData.detailHtml).to.not.be.null
+        pm.expect(jsonData.detailHtml).to.be.a('string')
+    }
+})
+
+pm.test("목록배너이미지P2(bannerImgP2) 정상 출력", function () {
+    try {
+        pm.expect(jsonData.bannerImgP2).to.be.null
+    } catch {
+        pm.expect(jsonData.bannerImgP2).to.not.be.null
+        pm.expect(jsonData.bannerImgP2).to.be.a('string')
+        pm.expect(jsonData.bannerImgP2).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("동영상이미지M(videoImgM) 정상 출력", function () {
+    try {
+        pm.expect(jsonData.videoImgM).to.be.null
+    } catch {
+        pm.expect(jsonData.videoImgM).to.not.be.null
+        pm.expect(jsonData.videoImgM).to.be.a('string')
+        pm.expect(jsonData.videoImgM).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("동영상이미지P(videoImgP) 정상 출력", function () {
+    try {
+        pm.expect(jsonData.videoImgP).to.be.null
+    } catch {
+        pm.expect(jsonData.videoImgP).to.not.be.null
+        pm.expect(jsonData.videoImgP).to.be.a('string')
+        pm.expect(jsonData.videoImgP).to.be.include("https://stg-images-kr.amoremall.com")
+    }
+})
+
+pm.test("상품그룹목록존재여부(prodGroupListYn) 정상 출력", function () {
+    pm.expect(jsonData.prodGroupListYn).to.be.oneOf(["Y", "N"])
+})
+
+// prodGroupList(기획 전시 상품 그룹) Response Data 확인
+if (jsonData.prodGroupListYn == "Y") {
+    for (q = 0; q < jsonData.prodGroupList.length; q++) {
+        pm.test("기획전시상품그룹일련번호(planDisplayProdGrpSn)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].planDisplayProdGrpSn).to.not.be.null
+            pm.expect(jsonData.prodGroupList[2].planDisplayProdGrpSn).to.eql(1338)
+            pm.expect(jsonData.prodGroupList[1].planDisplayProdGrpSn).to.eql(1337)
+            pm.expect(jsonData.prodGroupList[0].planDisplayProdGrpSn).to.eql(1336)
+        })
+
+        pm.test("상품그룹제목(prodGrpTitle)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].prodGrpTitle).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].prodGrpTitle).to.be.a('string')
+        })
+
+        // 상품 그룹명 이미지 사용 여부(Y,N)에 따라 일부 응답값 검증
+        if (jsonData.prodGroupList[q].prodGrpNameImgUseYn == "Y") {
+            pm.test("상품그룹명이미지사용여부(prodGrpNameImgUseYn) = Y 일 경우_제목이미지파일(titleImg)_" + [q+1] + " 정상 출력", function () {
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.not.be.null
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.be.a('string')
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.be.include("https://stg-images-kr.amoremall.com")
+            })
+        } else {
+            pm.test("상품그룹명이미지사용여부(prodGrpNameImgUseYn) = N 일 경우_제목이미지파일(titleImg)_" + [q+1] + " 미출력", function () {
+                // PRD 환경 null 리턴
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.be.undefined
+            })
+        }
+ 
+        pm.test("그룹콘텐츠존재여부(grpContentsExistYn)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].grpContentsExistYn).to.be.oneOf(["Y", "N"])
+        })
+
+        pm.test("PC목록상품단위수(pcListProdUnitCnt)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].pcListProdUnitCnt).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].pcListProdUnitCnt).to.be.a('Number')
+            pm.expect(jsonData.prodGroupList[q].pcListProdUnitCnt).to.be.at.within(2, 5)
+        })
+
+        pm.test("Mobile 목록상품단위수(mobileListProdUnitCnt)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].mobileListProdUnitCnt).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].mobileListProdUnitCnt).to.be.a('Number')
+            pm.expect(jsonData.prodGroupList[q].mobileListProdUnitCnt).to.be.at.within(1, 2)
+        })
+
+        // 그룹콘텐츠존재여부 , OnlineProd - 온라인상품 , Prod - 단위상품 , PromoProd - 프로모션상품
+        pm.test("그룹콘텐츠존재여부(prodListUnitCode)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].prodListUnitCode).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].prodListUnitCode).to.be.a('string')
+            pm.expect(jsonData.prodGroupList[q].prodListUnitCode).to.be.oneOf(["OnlineProd", "Prod", "PromoProd"])
+        })
+
+        // 기본형, 상품+리뷰형, 상품+MD코멘트형
+        pm.test("ECP기획전시 상품 유형코드(planDisplayProdTypeCode)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].planDisplayProdTypeCode).to.be.not.null
+            pm.expect(jsonData.prodGroupList[2].planDisplayProdTypeCode).to.eql("Default")
+            pm.expect(jsonData.prodGroupList[1].planDisplayProdTypeCode).to.eql("ProdReview")
+            pm.expect(jsonData.prodGroupList[0].planDisplayProdTypeCode).to.eql("ProdComment")
+        })
+
+        pm.test("사용여부(useYn)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].useYn).to.be.oneOf(["Y", "N"])
+        })
+
+        pm.test("배경색(bgColour)_" + [q+1] + " 정상 출력", function () {
+            pm.expect(jsonData.prodGroupList[q].bgColour).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].bgColour).to.be.a('String')
+        })
+    }
+} else {
+    pm.test("기획 전시 상품 그룹(prodGroupList) 미출력 상태 확인", function () {
+        pm.expect(jsonData.prodGroupList).to.be.eql([])
+    })
+}
+
+// pm.test("프로모션 일련번호(promoSn) 정상 출력_" + [i+1], function () {
+//     pm.expect(jsonData.prodGroupList.promoSn).to.not.be.null
+//     pm.expect(jsonData.prodGroupList.promoSn).to.be.a('Number')
+// })
+
+// pm.test("프로모션명(promoName) 정상 출력_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoName).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoName).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoName).to.be.a('string')
+//     }
+// })
+
+// pm.test("프로모션 안내(promoFoInfo) 정상 출력_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoFoInfo).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoFoInfo).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoFoInfo).to.be.a('string')
+//     }
+// })
+
+// pm.test("프로모션 기간 여부(promoPeriodYn) 정상 출력_" + [i+1], function () {
+//     pm.expect(jsonData.prodGroupList.promoPeriodYn).to.not.be.null
+//     pm.expect(jsonData.prodGroupList.promoPeriodYn).to.be.a('string')
+//     pm.expect(jsonData.prodGroupList.promoPeriodYn).to.be.oneOf(["Y", "N"])
+// })
+
+// pm.test("프로모션 시작일시(promoStartDt) 정상 출력_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoStartDt).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoStartDt).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoStartDt).to.be.a('string')
+//         pm.expect(jsonData.prodGroupList.promoStartDt.toString().length).to.be.at.least(8)
+//     }
+// })
+
+// pm.test("프로모션 종료일시(promoEndDt) 정상 출력_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoEndDt).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoEndDt).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoEndDt).to.be.a('string')
+//         pm.expect(jsonData.prodGroupList.promoEndDt.toString().length).to.be.at.least(8)
+//     }
+// })
+
+// awards(증정) Response Data 확인
+if (jsonData.awards.length > 0) {
+    jsonData.awards.forEach((award, i) => {
+        pm.test("증정일련번호(awardSn)_" + [i+1] + " 정상 출력", function () {
+            pm.expect(award.awardSn).to.not.be.null
+            pm.expect(award.awardSn.toString()).to.be.length(4);
+        })
+
+        // Default - 기본증정, Random - 랜덤증정
+        pm.test("증정방식코드(awardMethodCode)_" + [i+1] + " 정상 출력", function () {
+            try {
+                pm.expect(award.awardMethodCode == undefined).to.be.true
+            } catch {
+                pm.expect(award.awardMethodCode).to.be.oneOf(["Default", "Random"])    
+            }
+        })
+
+        // Prod - 사은품/상품증정 , Coupon- 쿠폰발급, Point - 포인트적립, MobileGiftCts - 모바일상품권적립
+        pm.test("증정대상코드(awardTgtCode)_" + [i+1] + " 정상 출력", function () {
+            pm.expect(award.awardTgtCode).to.be.oneOf(["Prod", "Coupon", "Point", "MobileGiftCts"])
+        })
+
+        switch (award.awardTgtCode) {
+            case 'Prod':
+                pm.test("온라인상품일련번호(onlineProdSn)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.onlineProdSn).to.not.be.null
+                    pm.expect(award.onlineProdSn).to.be.a('Number')
+                    pm.expect(award.onlineProdSn).to.be.at.least(0)
+                })
+
+                pm.test("상품일련번호(prodSn)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.prodSn).to.not.be.null
+                    pm.expect(award.prodSn).to.be.a('Number')
+                    pm.expect(award.prodSn).to.be.at.least(4)
+                })
+
+                pm.test("상품명(prodName)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.prodName).to.not.be.null
+                    pm.expect(award.prodName).to.be.a('string')
+                })
+
+                pm.test("상품이미지(prodImg)_" + [i+1] + " 정상 출력", function () {
+                    try {
+                        pm.expect(award.prodImg).to.be.null
+                    } catch {
+                        pm.expect(award.prodImg).to.not.be.null
+                        pm.expect(award.prodImg).to.be.a('string')
+                        pm.expect(award.prodImg).to.include('https://stg-images-kr.amoremall.com')
+                    }
+                })
+
+                pm.test("증정단위수량(awardUnitQty)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.awardUnitQty).to.not.be.null
+                    pm.expect(award.awardUnitQty).to.be.a('Number')
+                    pm.expect(award.awardUnitQty).at.leatst(0)
+                })
+                break;
+            case 'Coupon':
+                pm.test("쿠폰일련번호(couponSn)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.couponSn).to.not.be.null
+                    pm.expect(award.couponSn).to.be.a('Number')
+                    pm.expect(award.couponSn.toString().length).to.be.eql(4)
+                })
+
+                pm.test("쿠폰명(couponName)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.couponName).to.not.be.null
+                    pm.expect(award.couponName).to.be.a('string')
+                })
+                break;
+            case 'Point':
+                pm.test("포인트유형코드(pointTypeCode)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.pointTypeCode).to.eql("MembershipPoint")
+                })
+
+                pm.test("멤버십일련번호(membershipSn)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.membershipSn).to.not.be.null
+                    pm.expect(award.membershipSn).to.be.a('Number')
+                })
+
+                pm.test("멤버십명(membershipName)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.membershipName).to.not.be.null
+                    pm.expect(award.membershipName).to.be.a('string')
+                })
+
+                pm.test("적립포인트(savingPoint)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.savingPoint).to.not.be.null
+                    pm.expect(award.savingPoint).to.be.a('Number')
+                    pm.expect(award.savingPoint).to.be.at.least(0)
+                })
+
+                pm.test("포인트 유효일수(pointValidDays)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.pointValidDays).to.not.be.null
+                    pm.expect(award.pointValidDays).to.oneOf([30, 90, 200, 365]);
+                })
+                break;
+            case 'MobileGiftCts':
+                pm.test("기프트카드일련번호(giftcardSn)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.giftcardSn).to.not.be.null
+                    pm.expect(award.giftcardSn).to.be.a('Number')
+                    pm.expect(award.giftcardSn.toString().length).to.be.at.least(4)
+                })
+
+                pm.test("기프트카드명(giftcardName)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.giftcardName).to, not.be.null
+                    pm.expect(award.giftcardName).to.be.a('string')
+                })
+
+                pm.test("기프트카드 유효일수(giftcardValidDays)_" + [i+1] + " 정상 출력", function () {
+                    pm.expect(award.giftcardValidDays).to.not.be.null
+                    pm.expect(award.giftcardValidDays).to.be.a('string')
+                    pm.expect(award.giftcardValidDays.toString().length).to.be.at.least(8)
+                })
+                break;
+            default:
+            false
+            break;
+        }
+    })
+} else {
+    pm.test("awards(증정) 미 출력 상태 확인", function () {
+        pm.expect(jsonData.awards).to.be.eql([])
+    }) 
+}

@@ -1,0 +1,67 @@
+/***************************************/
+/**********   Set Variable   **********/
+/***************************************/
+// Response Body Data를 "jsonData" 변수에 저장
+var jsonData = pm.response.json();
+
+// 주문취소상품 저장
+const ordCancelProdList = []
+
+jsonData.ordHistEx.ordHistProdExList.forEach((ordHistProdEx) => {
+    console.log(ordHistProdEx.ordHistProdNo, ordHistProdEx.ordQty)
+    let ordCancelProd = {
+        ordHistProdNo: ordHistProdEx.ordHistProdNo,
+        cancelQty: ordHistProdEx.ordQty,
+        cancelReasonSn: 22
+    }
+    ordCancelProdList.push(ordCancelProd)
+})
+pm.environment.set("ordCancelProdList", JSON.stringify(ordCancelProdList))
+
+/***************************************/
+/**********   Assertion   **********/
+/***************************************/
+
+// 결제금액 확인
+pm.test("결제금액 정상 출력"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(3500)
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(parseInt(pm.environment.get('payAmt')))
+})
+
+// 상품 확인
+const prodSns_res = []
+jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
+    if(ordHistProdEx.ordHistProdTypeCode === "Ord") {
+        prodSns_res.push(ordHistProdEx.ordProdEx.prodSn)
+    }
+})
+console.log(prodSns_res)
+
+const prodSns_env = []
+prodSns_env.push(JSON.parse(pm.environment.get('온라인상품A')).prodSn)
+console.log(prodSns_env)
+
+pm.test("상품 정상 출력 확인 : 온라인상품A"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(prodSns_res).to.have.members(prodSns_env)
+});
+
+// 쿠폰 적용 확인
+pm.test("쿠폰_할인A : " + pm.environment.get("쿠폰_할인A_쿠폰명")+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    // 주문이력상품목록-쿠폰목록 할인금액 합계
+    const coupons = []
+    jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
+        const coupon = ordHistProdEx.ordHistProdCouponExList.find(ordHistProdCouponEx => ordHistProdCouponEx.couponSn == pm.environment.get("쿠폰_할인A_couponSn"))
+        if(coupon != undefined) { coupons.push(coupon) }
+    })
+    const sumDcAmt = coupons.map(e => e.dcAmt).reduce((prev, curr) => prev + curr, 0);
+    // 주문이력금액목록-할인금액
+    const amtPcur = jsonData.ordHistEx.ordHistAmtExList.find(ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === 'ProdUnitCouponDc').amtPcur
+    // 두 금액 비교
+    pm.expect(sumDcAmt).to.be.eql(amtPcur)
+});
+
+// 쿠폰_배송비A
+pm.test("쿠폰_배송비A : " + pm.environment.get("쿠폰_배송비A_쿠폰명")+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    const shipFeePromoDc = jsonData.ordHistEx.ordHistAmtExList.find(ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === "ShipFeePromoDc")
+    pm.expect(shipFeePromoDc.amtPcur).to.eql(2500)
+});
