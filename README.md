@@ -37,7 +37,6 @@ Selenium, Appium 등의 프레임워크 활용
 
 주문 및 클레임 관련 API 테스트 코드 포함
 
-Postman, Robot Framework, REST Assured 등을 활용하여 효율적인 API 검증 수행
 <br>
 <br>
 <br>
@@ -47,4 +46,3 @@ Postman, Robot Framework, REST Assured 등을 활용하여 효율적인 API 검�
 **📞 Contact**  
 이메일 : hnkim117@gmail.com  
 전화번호 : 010-8540-2697  
-깃허브 : 
