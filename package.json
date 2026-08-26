@@ -1,0 +1,11 @@
+{
+  "name": "mobile-payment-engine-sample",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "mobile": "node src/index.js"
+  },
+  "dependencies": {
+    "yaml": "^2.5.0"
+  }
+}
