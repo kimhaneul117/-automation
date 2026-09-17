@@ -1,0 +1,15 @@
+name: MOBILE_PAYMENT_NEGATIVE
+description: 오류 응답 Assertion 예시
+
+steps:
+  - name: 필수 파라미터 누락
+    command: ITEM_SEND
+    params:
+      carrier: "SAMPLE"
+    expect:
+      RESULT:
+        equals: "FAIL"
+      ERROR_CODE:
+        equals: "MISSING_AMOUNT"
+      ERROR_MESSAGE:
+        required: true

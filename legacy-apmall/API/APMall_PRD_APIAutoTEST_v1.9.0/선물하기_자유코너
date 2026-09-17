@@ -1,0 +1,365 @@
+// URL 媛?몄? 肄붾꼫 ?꾩씠??蹂?????
+const requestData = pm.request.url.getPathWithQuery().split('?')
+const requestcornerId = (requestData[1].split('&'))[0].split('=')[1]
+
+/**********     Assertion     **********/
+
+// ?좊Ъ?섍린 ?먯쑀肄붾꼫-?곹뭹???몄텧 ?곹깭
+if (responseBody.length !== 0) {
+    // Response Body Data瑜?"jsonData" 蹂?섏뿉 ???
+    var jsonData = JSON.parse(responseBody);
+
+    pm.test("肄붾꼫?꾩씠??cornerId) ?뺤긽 異쒕젰", function () {
+        pm.expect(jsonData.cornerId).to.be.a('String')
+        pm.expect(jsonData.cornerId).to.be.include("GIFT")
+        pm.expect(jsonData.cornerId).to.eql(requestcornerId)
+    })
+
+    pm.test("肄붾꼫紐?conerNmae) ?뺤긽 異쒕젰", function () {
+        try {
+            pm.expect(jsonData.cornerName === null).to.be.true;
+        } catch {
+            pm.expect(jsonData.cornerName).to.not.be.null
+            pm.expect(jsonData.cornerName).to.be.include('?좊Ъ')
+            pm.expect(jsonData.cornerName).to.be.a('String')
+        }
+    })
+
+    // 怨좎젙 1, 2踰덉쓣 ?쒖쇅???섎㉧吏 肄붾꼫 ?쒖꽌 以묒뿉 ?몄텧
+    pm.test("肄붾꼫 ?쒖꽌(cornerOrder) ?뺤긽 異쒕젰", function () {
+        pm.expect(jsonData.cornerOrder).to.not.be.null
+        pm.expect(jsonData.cornerOrder).to.be.a('Number')
+        pm.expect(jsonData.cornerOrder).to.have.within(3, 5);
+    })
+
+    jsonData.onlineProducts.forEach((op, i) => {
+        if (op.length >= 5) {
+            pm.test("?곹뭹 理쒖냼 5媛??댁긽 異쒕젰 ?뺤씤", function () {
+                // pm.expect(op).to.have.lengthOf.at.least(5);
+                pm.expect(op.length).to.be.at.least(5)
+            })
+
+            
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪???곹뭹踰덊샇(onlineProdSn)_" + [i + 1] + "?뺤긽異쒕젰", function () {
+                pm.expect(op.onlineProdSn).to.not.be.null
+                pm.expect(op.onlineProdSn).to.be.a('Number')
+                pm.expect(op.onlineProdSn.toString().length).within(4, 5)
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪???곹뭹肄붾뱶(onlineProdCode)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(op.onlineProdCode).to.not.be.null;
+                pm.expect(op.onlineProdCode).to.be.a('Number')
+                pm.expect(op.onlineProdCode.toString().length).to.be.eql(12)
+            })
+
+            pm.test("?⑤씪???곹뭹紐?onlineProdName) ?뺤긽 異쒕젰_" + [i + 1], function () {
+                pm.expect(op.onlineProdName).to.be.not.null
+                pm.expect(op.onlineProdName).to.be.a('String')
+                pm.expect(op.onlineProdName.toString().length).at.least(1)
+            })
+
+            pm.test("釉뚮옖?쒖씪?⑤쾲??brandSn) ?뺤긽 異쒕젰_" + [i + 1], function () {
+                pm.expect(op.brandSn).to.not.be.null
+                pm.expect(op.brandSn).to.be.a('Number')
+                pm.expect(op.brandSn.toString().length).at.least(2)
+            })
+
+            pm.test("釉뚮옖?쒖씠由?brandName) ?뺤긽異쒕젰_" + [i + 1], function () {
+                pm.expect(op.brandName).to.not.be.null
+                pm.expect(op.brandName).to.be.a('string')
+                pm.expect(op.brandName.toString().length).at.least(1)
+            })
+
+            pm.test("?⑤씪?몄긽?덈??쒖씠誘몄?(imgUrl) ?뺤긽 異쒕젰_" + [i + 1], function () {
+                try {
+                    pm.expect(op.imgUrl).to.be.null
+                } catch {
+                    pm.expect(op.imgUrl).to.not.be.null
+                    pm.expect(op.imgUrl).to.be.a('string')
+                    pm.expect(op.imgUrl).to.be.include("https://images-kr.amoremall.com/")
+                }
+            })
+
+            pm.test("?⑤씪?몄긽?덈??쒖젙媛(standardPrice) ?뺤긽 異쒕젰_" + [i + 1], function () {
+                pm.expect(op.standardPrice).to.not.be.null
+                pm.expect(op.standardPrice).to.be.a('Number')
+                pm.expect(op.standardPrice).at.least(100)
+            })
+
+            pm.test("?⑤씪?몄긽?????理쒖쥌 ?좎씤 ?곸슜媛discountedPrice) ?뺤긽 異쒕젰_" + [i + 1], function () {
+                pm.expect(op.discountedPrice).to.not.be.null
+                pm.expect(op.discountedPrice).to.be.a('Number')
+                pm.expect(op.discountedPrice).at.least(1000)
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???쇱씤?곹뭹 理쒖쥌 ?먮ℓ/?꾩떆 ?곹깭(saleDisplayStatus)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(op.saleDisplayStatus).to.not.be.null;
+                pm.expect(op.saleDisplayStatus).to.be.a('String')
+                pm.expect(op.saleDisplayStatus).to.be.oneOf(["OnSale", "Exhaustion", "OutOfStock", "WaitingSale", "EndSale", "SuspendSale", "WaitingDisplay", "EndDisplay", "PermanentEnd"])
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??M+N ?꾨줈紐⑥뀡 ?곸슜 ????곹뭹??寃쎌슦, 湲곕낯援щℓ ?섎웾(M)(baseOrdQty)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(op.baseOrdQty).to.not.be.null;
+                pm.expect(op.baseOrdQty).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??M+N ?꾨줈紐⑥뀡 ?곸슜 ????곹뭹??寃쎌슦, 異붽? 利앹젙 ?섎웾(N)(freeAwardQty)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(op.freeAwardQty).to.not.be.null;
+                pm.expect(op.freeAwardQty).to.be.a('Number')
+            })
+
+            try {
+                pm.expect(op.flags == null).to.be.true
+            } catch {
+                op.flags.forEach((flag, j) => {
+                    pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹?flags)_" + [j + 1] + " ?뺤긽 異쒕젰", function () {
+                        pm.expect(flag.code).to.be.oneOf(["icon_exc_sale", "icon_new", "icon_strong_rec", "icon_payback", "icon_award_gift", "icon_award_giftcard", "icon_reco_pacificshop"])
+                        pm.expect(flag.name).to.be.oneOf(["EXCLUSIVE", "NEW", "MD異붿쿇", "?섏씠諛?, "?ъ???, "湲고봽?몄뭅??, "?쇱떆?쎌꺏"])
+                        pm.expect(flag.notPacificShop).to.be.a('boolean')
+                    })
+
+                    switch (flag.code) {
+                        case 'icon_exc_sale':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("EXCLUSIVE")
+                            });
+                            break;
+                        case 'icon_new':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("NEW")
+                            });
+                            break;
+                        case 'icon_strong_rec':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("MD異붿쿇")
+                            });
+                            break;
+                        case 'icon_payback':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("?섏씠諛?)
+                            });
+                            break;
+                        case 'icon_award_gift':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("?ъ???)
+                            });
+                            break;
+                        case 'icon_award_giftcard':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("湲고봽?몄뭅??)
+                            });
+                            break;
+                        case 'icon_reco_pacificshop':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("?쇱떆?쎌꺏")
+                            });
+                            break;
+                        default:
+                            false
+                            break;
+                    }
+                })
+            }
+        } //if ??
+    })
+
+    for (var i = 0; i < jsonData.onlineProducts.length; i++) {
+        // ?곹뭹??5媛??댁긽??寃쎌슦?먮쭔 ?대떦 肄붾꼫 ?꾩떆
+        if (jsonData.onlineProducts.length >= 5) {
+            pm.test("?곹뭹 理쒖냼 5媛??댁긽 異쒕젰 ?뺤씤", function () {
+                pm.expect(jsonData.onlineProducts).to.have.lengthOf.at.least(5);
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪???곹뭹踰덊샇(onlineProdSn)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].onlineProdSn).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].onlineProdSn).to.be.a('Number')
+                pm.expect(jsonData.onlineProducts[i].onlineProdSn.toString()).to.have.lengthOf.within(4, 5);
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪???곹뭹肄붾뱶(onlineProdCode)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].onlineProdCode).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].onlineProdCode.toString()).to.be.length(12)
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪???곹뭹紐?onlineProdName)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].onlineProdName).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].onlineProdName).to.be.a('String')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??釉뚮옖???쇰젴踰덊샇(brandSn)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].brandSn).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].brandSn).to.be.a('Number')
+                pm.expect(jsonData.onlineProducts[i].brandSn.toString()).to.have.lengthOf.within(1, 3);
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??釉뚮옖???대쫫 (?쒓?)(brandName)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].brandName).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].brandName).to.be.a('String')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪?몄긽??????대?吏(imgUrl)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                try {
+                    pm.expect(jsonData.onlineProducts[i].imgUrl === "").to.be.true;
+                } catch {
+                    pm.expect(jsonData.onlineProducts[i].imgUrl).to.not.be.null;
+                    pm.expect(jsonData.onlineProducts[i].imgUrl).to.be.a('String')
+                    pm.expect(jsonData.onlineProducts[i].imgUrl).to.include("https://images-kr.amoremall.com")
+                }
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪?몄긽??????뺢?(standardPrice)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].standardPrice).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].standardPrice).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪?몄긽?????理쒖쥌 ?좎씤?곸슜媛(discountedPrice)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].discountedPrice).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].discountedPrice).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???쇱씤?곹뭹 理쒖쥌 ?먮ℓ/?꾩떆 ?곹깭(saleDisplayStatus)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].saleDisplayStatus).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].saleDisplayStatus).to.be.a('String')
+                pm.expect(jsonData.onlineProducts[i].saleDisplayStatus).to.be.oneOf(["OnSale", "Exhaustion", "OutOfStock", "WaitingSale", "EndSale", "SuspendSale", "WaitingDisplay", "EndDisplay", "PermanentEnd"])
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??M+N ?꾨줈紐⑥뀡 ?곸슜 ????곹뭹??寃쎌슦, 湲곕낯援щℓ ?섎웾(M)(baseOrdQty)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].baseOrdQty).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].baseOrdQty).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??M+N ?꾨줈紐⑥뀡 ?곸슜 ????곹뭹??寃쎌슦, 異붽? 利앹젙 ?섎웾(N)(freeAwardQty)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].freeAwardQty).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].freeAwardQty).to.be.a('Number')
+            })
+
+            try {
+                pm.expect(jsonData.onlineProducts[i].flags == null).to.be.true
+            } catch {
+                jsonData.onlineProducts[i].flags.forEach((flag, j) => {
+                    pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹?flags)_" + [j + 1] + " ?뺤긽 異쒕젰", function () {
+                        pm.expect(flag.code).to.be.oneOf(["icon_exc_sale", "icon_new", "icon_strong_rec", "icon_payback", "icon_award_gift", "icon_award_giftcard", "icon_reco_pacificshop"])
+                        pm.expect(flag.name).to.be.oneOf(["EXCLUSIVE", "NEW", "MD異붿쿇", "?섏씠諛?, "?ъ???, "湲고봽?몄뭅??, "?쇱떆?쎌꺏"])
+                        pm.expect(flag.notPacificShop).to.be.a('boolean')
+                    })
+
+                    switch (flag.code) {
+                        case 'icon_exc_sale':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("EXCLUSIVE")
+                            });
+                            break;
+                        case 'icon_new':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("NEW")
+                            });
+                            break;
+                        case 'icon_strong_rec':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("MD異붿쿇")
+                            });
+                            break;
+                        case 'icon_payback':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("?섏씠諛?)
+                            });
+                            break;
+                        case 'icon_award_gift':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("?ъ???)
+                            });
+                            break;
+                        case 'icon_award_giftcard':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("湲고봽?몄뭅??)
+                            });
+                            break;
+                        case 'icon_reco_pacificshop':
+                            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚮옒洹??뺣낫(flags) ?뺤긽異쒕젰" + [i + 1] + "_" + [j + 1], function () {
+                                pm.expect(flag.name).to.eql("?쇱떆?쎌꺏")
+                            });
+                            break;
+                        default:
+                            false
+                            break;
+                    }
+                })
+            }
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???묒꽦??珥?由щ럭 媛쒖닔(reviewCount)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].reviewCount).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].reviewCount).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??由щ럭 ?됯퇏 ?먯닔(reviewAverage)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].reviewAverage).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].reviewAverage).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??醫뗭븘??踰덊샇(likeTargetNo)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].likeTargetNo).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].likeTargetNo).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???⑤씪?몄긽?????理쒖쥌 ?좎씤??discountRate)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].discountRate).to.not.be.null;
+                pm.expect(jsonData.onlineProducts[i].discountRate).to.be.a('Number')
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??????⑥쐞?곹뭹???댁쨷媛?쒓린?щ?(isDiscount)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].isDiscount).to.be.oneOf([true, false])
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??理쒖쥌 ?좎씤?곸슜媛 ?댁긽???⑥쐞?곹뭹 議댁옱 ?щ?(isSwungDash)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].isSwungDash).to.be.oneOf([true, false])
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??酉고떚?ъ씤??援먰솚 ?곹뭹 ?щ?(isBeautyPoint)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].isBeautyPoint).to.be.oneOf([true, false])
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹???뚯썝蹂?醫뗭븘?뷀븳 ?곹뭹 ?ㅼ젙 ?щ?(isLike)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].isLike).to.be.oneOf([true, false])
+            })
+
+            pm.test("?먯쑀肄붾꼫 - ?곹뭹??諛붾줈援щℓ ?꾩슜 ?щ?(isBuyNowOnly)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.onlineProducts[i].isBuyNowOnly).to.be.oneOf([true, false])
+            })
+        } else {
+            pm.expect.fail('?먯쑀肄붾꼫 - ?곹뭹???⑤씪???곹뭹 紐⑸줉(onlineProducts) 誘?異쒕젰=' + jsonData.freeProduct.onlineProducts.length);
+        }
+    }
+
+    // ??蹂닿린 踰꾪듉 ?ъ슜 ??Respones Data ?뺤씤
+    if (jsonData.viewMoreButtonYn == "Y") {
+        pm.test("?먯쑀肄붾꼫 - ?곹뭹???붾낫湲곕쾭?쇰챸(viewMoreButtonName) ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.viewMoreButtonName).to.not.be.null;
+            pm.expect(jsonData.viewMoreButtonName).to.be.a('String')
+            pm.expect(jsonData.viewMoreButtonName).to.have.lengthOf.most(7);
+        })
+
+        pm.test("?먯쑀肄붾꼫 - ?곹뭹???붾낫湲곕쾭?쇰쭅??viewMoreButtonUrl) ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.viewMoreButtonUrl).to.include('https://www.amoremall.com')
+        })
+        // ??蹂닿린 踰꾪듉 誘몄궗????Respones Data ?뺤씤
+    } else if (jsonData.viewMoreButtonYn == "N") {
+        pm.test("?먯쑀肄붾꼫 - ?곹뭹???붾낫湲곕쾭?쇰챸(viewMoreButtonName) ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.viewMoreButtonName).to.be.null;
+        })
+
+        pm.test("?먯쑀肄붾꼫 - ?곹뭹???붾낫湲곕쾭?쇰쭅??viewMoreButtonUrl) ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.viewMoreButtonUrl).to.be.null;
+        })
+    }
+
+    pm.test("?먯쑀肄붾꼫 - ?곹뭹??肄섑뀗痢???댄?(title) ?뺤긽 異쒕젰", function () {
+        pm.expect(jsonData.title).to.not.be.null;
+        pm.expect(jsonData.title).to.be.a('String')
+    })
+    // ?좊Ъ?섍린 ?먯쑀肄붾꼫-?곹뭹??誘몃끂異??곹깭????
+} else {
+    pm.test("?좊Ъ?섍린 ?먯쑀肄붾꼫-?곹뭹??誘??몄텧 ?곹깭 ?뺤씤", function () {
+        pm.response.to.have.body('');
+    })
+}

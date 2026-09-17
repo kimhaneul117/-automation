@@ -1,0 +1,527 @@
+// URL 媛?몄? 肄붾꼫 ?꾩씠??蹂?????
+const requestData = pm.request.url.getPathWithQuery().split('/')
+
+// Response Body Data瑜?"jsonData" 蹂?섏뿉 ???
+var jsonData = JSON.parse(responseBody);
+
+// ?ㅻ뒛 ?좎쭨 援ы븯湲?
+var nowYMD = parseInt(require('moment')().format("YYYYMMDD"))
+
+/**********     Assertion     **********/
+
+// AllMember (?뚯썝?꾩껜), Employee (?꾩쭅?먯쟾??, FirstPur (?앹븷泥リ뎄留?, MemberLevel (?뚯썝?깃툒吏??, MembershipLevel (?뚯썝硫ㅻ쾭??벑湲?, MemberDesignated (?뚯썝?섎룞吏??, MyShop (留덉씠?듯쉶??, NonPur (理쒓렐誘멸뎄留?, PeriodPur (湲곌컙?댁껀援щℓ), PayMember (?좊즺?뚯썝?꾩슜), DesignatedMember (??곹쉶???섎룞吏??
+pm.test("??곹쉶?먯퐫??tgtMemberCode) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.tgtMemberCode).to.oneOf(["AllMember", "Employee", "FirstPur", "MemberLevel", "MembershipLevel", "MemberDesignated", "MyShop", " NonPur", "PeriodPur", "PayMember", "DesignatedMember"])
+})
+
+pm.test("?몄텧 ????щ?(displayTgtYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.displayTgtYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("李몄뿬 ????щ?(participateTgtYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.participateTgtYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("?쇱떆以묒? ?щ?(suspendYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.suspendYn).to.eql("N")
+})
+
+pm.test("Pc Web ?꾩떆 ?щ?(pcWebDisplayYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.pcWebDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("MO Web ?꾩떆 ?щ?(mobileWebDisplayYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.mobileWebDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("MO APP ?꾩떆 ?щ?(mobileAppDisplayYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.mobileAppDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("吏꾪뻾?곹깭(displayStatus) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.displayStatus).to.be.a('string')
+    pm.expect(jsonData.displayStatus).to.eql("Progress")
+})
+
+pm.test("?됱궗李몄뿬媛?μ뿬遺(participantYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.participantYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("湲고쉷???쇰젴踰덊샇(planDisplaySn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.planDisplaySn).to.not.be.null
+    pm.expect(jsonData.planDisplaySn).to.eql(parseInt((requestData)[6]))
+    pm.expect(jsonData.planDisplaySn.toString().length).to.be.eql(4)
+})
+
+// URL 留곹겕, ?쇰컲 援ъ꽦 湲고쉷 ?꾩떆, ?숈떆 援щℓ 湲고쉷 ?꾩떆, ?숈쁺??援ъ꽦 湲고쉷 ?꾩떆 ?좏삎 以??ㅼ젙 媛??
+pm.test("湲고쉷?꾩떆?좏삎肄붾뱶 (PlanDisplayType) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.planDisplayTypeCode).to.not.be.null
+    pm.expect(jsonData.planDisplayTypeCode).to.be.a('string')
+    pm.expect(jsonData.planDisplayTypeCode).to.be.oneOf(["General", "Link", "SameTimePur", "Video"])
+})
+
+pm.test("?덉갹?щ?(newWindowYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.newWindowYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("?곸꽭?섏씠吏 ?꾩씠??detailPageId) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.detailPageId).to.not.be.null
+    pm.expect(jsonData.detailPageId).to.be.a('string')
+})
+
+const nStartDt = jsonData.startDt.split('T')
+const nStartDt_date = parseInt((nStartDt[0].split(','))[0].replace(/-/g, ''))
+const nEndDt = jsonData.endDt.split('T')
+const nEndDt_date = parseInt((nEndDt[0].split(','))[0].replace(/-/g, ''))
+console.log(nStartDt_date)
+console.log(nEndDt_date)
+
+// 吏꾪뻾 ?곹깭 End媛 ?꾨땺 寃쎌슦
+if (jsonData.displayStatus != "End") {
+    pm.test("湲고쉷?꾩떆 ?쒖옉?쇱떆 ~ 湲고쉷?꾩떆 醫낅즺?쇱떆 ?ъ씠???ㅻ뒛 ?좎쭨("+nowYMD+") ?뺤씤", function () {
+        pm.expect(nowYMD).to.be.within(nStartDt_date, nEndDt_date);
+    })
+}
+
+pm.test("湲고쉷?꾩떆 ?쒖옉?쇱떆(startDt) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.startDt).to.not.be.null
+    pm.expect(jsonData.startDt).to.be.a('string')
+    pm.expect(jsonData.startDt.toString().length).to.be.at.least(8)
+})
+
+pm.test("湲고쉷?꾩떆 醫낅즺?쇱떆(endDt) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.endDt).to.not.be.null
+    pm.expect(jsonData.endDt).to.be.a('string')
+    pm.expect(jsonData.endDt.toString().length).to.be.at.least(8)
+})
+
+pm.test("?꾩쭅?먯쟾?⑹뿬遺(employeeOnlyYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.employeeOnlyYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("怨듭슜?ъ슜?щ?(shareUseYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.shareUseYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("SNS?곌퀎 ?쒕ぉ(snsIfTitle) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.snsIfTitle).to.not.be.null
+    pm.expect(jsonData.snsIfTitle).to.be.a('String')
+})
+
+pm.test("SNS?곌퀎 ?ㅻ챸(snsIfDesc) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.snsIfDesc).to.not.be.null
+    pm.expect(jsonData.snsIfDesc).to.be.a('string')
+})
+
+pm.test("SNS?댁떆?쒓렇(snsHashTag) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.snsHashTag).to.not.be.null
+    pm.expect(jsonData.snsHashTag).to.be.a('string')
+})
+
+pm.test("寃?됲깭洹?searchTag) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.searchTag).to.not.be.null
+    pm.expect(jsonData.searchTag).to.be.a('string')
+});
+
+pm.test("?곹뭹洹몃９?꾩떆諛⑹떇肄붾뱶(prodGrpDisplayMethodCode) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.prodGrpDisplayMethodCode).to.be.oneOf(["List", "Tab"])
+})
+
+pm.test("?됱궗?ы븿?щ?(eventIncludeYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.eventIncludeYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("?대깽?몄갭?щ갑踰뺥몴?쒖뿬遺(evntPrtpMthdMkYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.evntPrtpMthdMkYn).to.be.oneOf(["Y", "N"])
+});
+
+// Button- 李몄뿬踰꾪듉??, Comment - 李몄뿬?볤???
+pm.test("?됱궗?좏삎(eventType) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.eventType).to.eql("Comment")
+});
+
+// event Response Data ?뺤씤
+pm.test("?됱궗 ?쒖옉?쇱떆(startDt) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.event.startDt).to.not.be.null
+    pm.expect(jsonData.event.startDt).to.be.a('string')
+    pm.expect(jsonData.event.startDt.toString().length).to.be.at.least(8)
+});
+
+pm.test("?됱궗 醫낅즺?쇱떆(endDt) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.event.endDt).to.not.be.null
+    pm.expect(jsonData.event.endDt).to.be.a('string')
+    pm.expect(jsonData.event.endDt.toString().length).to.be.at.least(8)
+});
+
+// Immed - 李몄뿬利됱떆?뱀꺼 , End - 醫낅즺?꾨떦泥⑥꽑??
+pm.test("?뱀꺼?먯꽑?뺣갑?앹퐫??winnerSelectMethodCode) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.event.winnerSelectMethodCode).to.oneOf(["Immed", "End"])
+});
+
+pm.test("李몄뿬?먯닔?몄텧?щ?(participatedCntExpsYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.event.participatedCntExpsYn).to.be.oneOf(["Y", "N"])
+});
+
+pm.test("李몄뿬?먮늻?곸닔(eventParticipantCount) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.event.eventParticipantCount).to.be.at.least(0)
+});
+
+pm.test("?쇳븨留덊궧??shoppingMarkCnt) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.shoppingMarkCnt).to.not.be.null
+    pm.expect(jsonData.shoppingMarkCnt).to.be.a('Number')
+    pm.expect(jsonData.shoppingMarkCnt).to.be.at.least(0)
+});
+
+pm.test("?쇳븨留덊궧 ?뚯썝?쇰젴踰덊샇 ??shoppingMarkMemberSnCnt) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.shoppingMarkMemberSnCnt).to.not.be.null
+    pm.expect(jsonData.shoppingMarkMemberSnCnt).to.be.a('Number')
+    pm.expect(jsonData.shoppingMarkMemberSnCnt).to.be.at.least(0)
+})
+
+pm.test("?덈궡臾??쇱묠?щ?(guideUnrollYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.guideUnrollYn).to.be.oneOf(["Y", "N"])
+});
+
+pm.test("愿?⑤툕?쒕뱶 諛붾줈 媛湲??꾩떆?щ?(relationBrandShortcutDisplayYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.relationBrandShortcutDisplayYn).to.be.oneOf(["Y", "N"])
+})
+
+pm.test("FO?덈궡(foGuide) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.foGuide).to.not.be.null
+    pm.expect(jsonData.foGuide).to.include('https://stg-images-kr.amoremall.com/dsp-stg-upload-amt/fileupload/2024/03/14/硫붿씤踰좊꼫_吏?jpg')
+});
+
+pm.test("?곸꽭HTML(detailHtml) ?뺤긽 異쒕젰", function () {
+    // 誘??ㅼ젙??寃쎌슦 null媛?泥섎━   
+    try {
+        pm.expect(jsonData.detailHtml).to.be.null
+    } catch {
+        pm.expect(jsonData.detailHtml).to.not.be.null
+        pm.expect(jsonData.detailHtml).to.be.a('string')
+    }
+});
+
+pm.test("SNS?곌퀎 ?대?吏寃쎈줈(snsIfImg) ?뺤긽 異쒕젰", function () {
+    // 誘??ㅼ젙??寃쎌슦 null媛?泥섎━
+    try {
+        pm.expect(jsonData.snsIfImg).to.be.null
+    } catch {
+        pm.expect(jsonData.snsIfImg).to.not.be.null
+        pm.expect(jsonData.snsIfImg).to.be.a('string')
+    }
+})
+
+pm.test("紐⑸줉諛곕꼫?대?吏M1(bannerImgM1) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.bannerImgM1).to.be.include("https://stg-images-kr.amoremall.com")
+})
+
+pm.test("紐⑸줉諛곕꼫?대?吏M1(bannerImgM2) ?뺤긽 異쒕젰", function () {
+    try {
+        pm.expect(jsonData.bannerImgM2).to.be.null
+    } catch {
+        pm.expect(jsonData.bannerImgM2).to.not.be.null
+        pm.expect(jsonData.bannerImgM2).to.be.a('string')
+        pm.expect(jsonData.bannerImgM2).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("紐⑸줉諛곕꼫?대?吏P1(bannerImgP1) ?뺤긽 異쒕젰", function () {
+    try {
+        pm.expect(jsonData.bannerImgP1).to.be.null
+    } catch {
+        pm.expect(jsonData.bannerImgP1).to.not.be.null
+        pm.expect(jsonData.bannerImgP1).to.be.a('string')
+        pm.expect(jsonData.bannerImgP1).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("洹몃９?곸꽭HTML(detailHtml) ?뺤긽 異쒕젰", function () {
+    try {
+        pm.expect(jsonData.detailHtml).to.be.null
+    } catch {
+        pm.expect(jsonData.detailHtml).to.not.be.null
+        pm.expect(jsonData.detailHtml).to.be.a('string')
+    }
+})
+
+pm.test("紐⑸줉諛곕꼫?대?吏P2(bannerImgP2) ?뺤긽 異쒕젰", function () {
+    try {
+        pm.expect(jsonData.bannerImgP2).to.be.null
+    } catch {
+        pm.expect(jsonData.bannerImgP2).to.not.be.null
+        pm.expect(jsonData.bannerImgP2).to.be.a('string')
+        pm.expect(jsonData.bannerImgP2).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("?숈쁺?곸씠誘몄?M(videoImgM) ?뺤긽 異쒕젰", function () {
+    try {
+        pm.expect(jsonData.videoImgM).to.be.null
+    } catch {
+        pm.expect(jsonData.videoImgM).to.not.be.null
+        pm.expect(jsonData.videoImgM).to.be.a('string')
+        pm.expect(jsonData.videoImgM).to.be.include("https://stg-images-kr.amoremall.com/")
+    }
+})
+
+pm.test("?숈쁺?곸씠誘몄?P(videoImgP) ?뺤긽 異쒕젰", function () {
+    try {
+        pm.expect(jsonData.videoImgP).to.be.null
+    } catch {
+        pm.expect(jsonData.videoImgP).to.not.be.null
+        pm.expect(jsonData.videoImgP).to.be.a('string')
+        pm.expect(jsonData.videoImgP).to.be.include("https://stg-images-kr.amoremall.com")
+    }
+})
+
+pm.test("?곹뭹洹몃９紐⑸줉議댁옱?щ?(prodGroupListYn) ?뺤긽 異쒕젰", function () {
+    pm.expect(jsonData.prodGroupListYn).to.be.oneOf(["Y", "N"])
+})
+
+// prodGroupList(湲고쉷 ?꾩떆 ?곹뭹 洹몃９) Response Data ?뺤씤
+if (jsonData.prodGroupListYn == "Y") {
+    for혻(q혻=혻0;혻q혻<혻jsonData.prodGroupList.length;혻q++)혻{
+        pm.test("湲고쉷?꾩떆?곹뭹洹몃９?쇰젴踰덊샇(planDisplayProdGrpSn)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].planDisplayProdGrpSn).to.not.be.null
+            pm.expect(jsonData.prodGroupList[2].planDisplayProdGrpSn).to.eql(1338)
+            pm.expect(jsonData.prodGroupList[1].planDisplayProdGrpSn).to.eql(1337)
+            pm.expect(jsonData.prodGroupList[0].planDisplayProdGrpSn).to.eql(1336)
+        })
+
+        pm.test("?곹뭹洹몃９?쒕ぉ(prodGrpTitle)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].prodGrpTitle).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].prodGrpTitle).to.be.a('string')
+        })
+
+        // ?곹뭹 洹몃９紐??대?吏 ?ъ슜 ?щ?(Y,N)???곕씪 ?쇰? ?묐떟媛?寃利?
+        if (jsonData.prodGroupList[q].prodGrpNameImgUseYn == "Y") {
+            pm.test("?곹뭹洹몃９紐낆씠誘몄??ъ슜?щ?(prodGrpNameImgUseYn) = Y ??寃쎌슦_?쒕ぉ?대?吏?뚯씪(titleImg)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.not.be.null
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.be.a('string')
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.be.include("https://stg-images-kr.amoremall.com")
+            })
+        } else {
+            pm.test("?곹뭹洹몃９紐낆씠誘몄??ъ슜?щ?(prodGrpNameImgUseYn) = N ??寃쎌슦_?쒕ぉ?대?吏?뚯씪(titleImg)_" + [q+1] + " 誘몄텧??, function () {
+                // PRD ?섍꼍 null 由ы꽩
+                pm.expect(jsonData.prodGroupList[q].titleImg).to.be.undefined
+            })
+        }
+ 
+        pm.test("洹몃９肄섑뀗痢좎〈?ъ뿬遺(grpContentsExistYn)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].grpContentsExistYn).to.be.oneOf(["Y", "N"])
+        })
+
+        pm.test("PC紐⑸줉?곹뭹?⑥쐞??pcListProdUnitCnt)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].pcListProdUnitCnt).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].pcListProdUnitCnt).to.be.a('Number')
+            pm.expect(jsonData.prodGroupList[q].pcListProdUnitCnt).to.be.at.within(2, 5)
+        })
+
+        pm.test("Mobile 紐⑸줉?곹뭹?⑥쐞??mobileListProdUnitCnt)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].mobileListProdUnitCnt).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].mobileListProdUnitCnt).to.be.a('Number')
+            pm.expect(jsonData.prodGroupList[q].mobileListProdUnitCnt).to.be.at.within(1, 2)
+        })
+
+        // 洹몃９肄섑뀗痢좎〈?ъ뿬遺 , OnlineProd - ?⑤씪?몄긽??, Prod - ?⑥쐞?곹뭹 , PromoProd - ?꾨줈紐⑥뀡?곹뭹
+        pm.test("洹몃９肄섑뀗痢좎〈?ъ뿬遺(prodListUnitCode)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].prodListUnitCode).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].prodListUnitCode).to.be.a('string')
+            pm.expect(jsonData.prodGroupList[q].prodListUnitCode).to.be.oneOf(["OnlineProd", "Prod", "PromoProd"])
+        })
+
+        // 湲곕낯?? ?곹뭹+由щ럭?? ?곹뭹+MD肄붾찘?명삎
+        pm.test("ECP湲고쉷?꾩떆 ?곹뭹 ?좏삎肄붾뱶(planDisplayProdTypeCode)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].planDisplayProdTypeCode).to.be.not.null
+            pm.expect(jsonData.prodGroupList[2].planDisplayProdTypeCode).to.eql("Default")
+            pm.expect(jsonData.prodGroupList[1].planDisplayProdTypeCode).to.eql("ProdReview")
+            pm.expect(jsonData.prodGroupList[0].planDisplayProdTypeCode).to.eql("ProdComment")
+        })
+
+        pm.test("?ъ슜?щ?(useYn)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].useYn).to.be.oneOf(["Y", "N"])
+        })
+
+        pm.test("諛곌꼍??bgColour)_" + [q+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(jsonData.prodGroupList[q].bgColour).to.not.be.null
+            pm.expect(jsonData.prodGroupList[q].bgColour).to.be.a('String')
+        })
+    }
+} else {
+    pm.test("湲고쉷 ?꾩떆 ?곹뭹 洹몃９(prodGroupList) 誘몄텧???곹깭 ?뺤씤", function () {
+        pm.expect(jsonData.prodGroupList).to.be.eql([])
+    })
+}
+
+// pm.test("?꾨줈紐⑥뀡 ?쇰젴踰덊샇(promoSn) ?뺤긽 異쒕젰_" + [i+1], function () {
+//     pm.expect(jsonData.prodGroupList.promoSn).to.not.be.null
+//     pm.expect(jsonData.prodGroupList.promoSn).to.be.a('Number')
+// })
+
+// pm.test("?꾨줈紐⑥뀡紐?promoName) ?뺤긽 異쒕젰_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoName).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoName).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoName).to.be.a('string')
+//     }
+// })
+
+// pm.test("?꾨줈紐⑥뀡 ?덈궡(promoFoInfo) ?뺤긽 異쒕젰_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoFoInfo).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoFoInfo).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoFoInfo).to.be.a('string')
+//     }
+// })
+
+// pm.test("?꾨줈紐⑥뀡 湲곌컙 ?щ?(promoPeriodYn) ?뺤긽 異쒕젰_" + [i+1], function () {
+//     pm.expect(jsonData.prodGroupList.promoPeriodYn).to.not.be.null
+//     pm.expect(jsonData.prodGroupList.promoPeriodYn).to.be.a('string')
+//     pm.expect(jsonData.prodGroupList.promoPeriodYn).to.be.oneOf(["Y", "N"])
+// })
+
+// pm.test("?꾨줈紐⑥뀡 ?쒖옉?쇱떆(promoStartDt) ?뺤긽 異쒕젰_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoStartDt).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoStartDt).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoStartDt).to.be.a('string')
+//         pm.expect(jsonData.prodGroupList.promoStartDt.toString().length).to.be.at.least(8)
+//     }
+// })
+
+// pm.test("?꾨줈紐⑥뀡 醫낅즺?쇱떆(promoEndDt) ?뺤긽 異쒕젰_" + [i+1], function () {
+//     try {
+//         pm.expect(jsonData.prodGroupList.promoEndDt).to.be.null
+//     } catch {
+//         pm.expect(jsonData.prodGroupList.promoEndDt).to.not.be.null
+//         pm.expect(jsonData.prodGroupList.promoEndDt).to.be.a('string')
+//         pm.expect(jsonData.prodGroupList.promoEndDt.toString().length).to.be.at.least(8)
+//     }
+// })
+
+// awards(利앹젙) Response Data ?뺤씤
+if (jsonData.awards.length > 0) {
+    jsonData.awards.forEach((award, i) => {
+        pm.test("利앹젙?쇰젴踰덊샇(awardSn)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(award.awardSn).to.not.be.null
+            pm.expect(award.awardSn.toString()).to.be.length(4);
+        })
+
+        // Default - 湲곕낯利앹젙, Random - ?쒕뜡利앹젙
+        pm.test("利앹젙諛⑹떇肄붾뱶(awardMethodCode)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+            try {
+                pm.expect(award.awardMethodCode == undefined).to.be.true
+            } catch {
+                pm.expect(award.awardMethodCode).to.be.oneOf(["Default", "Random"])    
+            }
+        })
+
+        // Prod - ?ъ????곹뭹利앹젙 , Coupon- 荑좏룿諛쒓툒, Point - ?ъ씤?몄쟻由? MobileGiftCts - 紐⑤컮?쇱긽?덇텒?곷┰
+        pm.test("利앹젙??곸퐫??awardTgtCode)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(award.awardTgtCode).to.be.oneOf(["Prod", "Coupon", "Point", "MobileGiftCts"])
+        })
+
+        switch (award.awardTgtCode) {
+            case 'Prod':
+                pm.test("?⑤씪?몄긽?덉씪?⑤쾲??onlineProdSn)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.onlineProdSn).to.not.be.null
+                    pm.expect(award.onlineProdSn).to.be.a('Number')
+                    pm.expect(award.onlineProdSn).to.be.at.least(0)
+                })
+
+                pm.test("?곹뭹?쇰젴踰덊샇(prodSn)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.prodSn).to.not.be.null
+                    pm.expect(award.prodSn).to.be.a('Number')
+                    pm.expect(award.prodSn).to.be.at.least(4)
+                })
+
+                pm.test("?곹뭹紐?prodName)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.prodName).to.not.be.null
+                    pm.expect(award.prodName).to.be.a('string')
+                })
+
+                pm.test("?곹뭹?대?吏(prodImg)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    try {
+                        pm.expect(award.prodImg).to.be.null
+                    } catch {
+                        pm.expect(award.prodImg).to.not.be.null
+                        pm.expect(award.prodImg).to.be.a('string')
+                        pm.expect(award.prodImg).to.include('https://stg-images-kr.amoremall.com')
+                    }
+                })
+
+                pm.test("利앹젙?⑥쐞?섎웾(awardUnitQty)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.awardUnitQty).to.not.be.null
+                    pm.expect(award.awardUnitQty).to.be.a('Number')
+                    pm.expect(award.awardUnitQty).at.leatst(0)
+                })
+                break;
+            case 'Coupon':
+                pm.test("荑좏룿?쇰젴踰덊샇(couponSn)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.couponSn).to.not.be.null
+                    pm.expect(award.couponSn).to.be.a('Number')
+                    pm.expect(award.couponSn.toString().length).to.be.eql(4)
+                })
+
+                pm.test("荑좏룿紐?couponName)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.couponName).to.not.be.null
+                    pm.expect(award.couponName).to.be.a('string')
+                })
+                break;
+            case 'Point':
+                pm.test("?ъ씤?몄쑀?뺤퐫??pointTypeCode)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.pointTypeCode).to.eql("MembershipPoint")
+                })
+
+                pm.test("硫ㅻ쾭??씪?⑤쾲??membershipSn)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.membershipSn).to.not.be.null
+                    pm.expect(award.membershipSn).to.be.a('Number')
+                })
+
+                pm.test("硫ㅻ쾭??챸(membershipName)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.membershipName).to.not.be.null
+                    pm.expect(award.membershipName).to.be.a('string')
+                })
+
+                pm.test("?곷┰?ъ씤??savingPoint)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.savingPoint).to.not.be.null
+                    pm.expect(award.savingPoint).to.be.a('Number')
+                    pm.expect(award.savingPoint).to.be.at.least(0)
+                })
+
+                pm.test("?ъ씤???좏슚?쇱닔(pointValidDays)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.pointValidDays).to.not.be.null
+                    pm.expect(award.pointValidDays).to.oneOf([30, 90, 200, 365]);
+                })
+                break;
+            case 'MobileGiftCts':
+                pm.test("湲고봽?몄뭅?쒖씪?⑤쾲??giftcardSn)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.giftcardSn).to.not.be.null
+                    pm.expect(award.giftcardSn).to.be.a('Number')
+                    pm.expect(award.giftcardSn.toString().length).to.be.at.least(4)
+                })
+
+                pm.test("湲고봽?몄뭅?쒕챸(giftcardName)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.giftcardName).to, not.be.null
+                    pm.expect(award.giftcardName).to.be.a('string')
+                })
+
+                pm.test("湲고봽?몄뭅???좏슚?쇱닔(giftcardValidDays)_" + [i+1] + " ?뺤긽 異쒕젰", function () {
+                    pm.expect(award.giftcardValidDays).to.not.be.null
+                    pm.expect(award.giftcardValidDays).to.be.a('string')
+                    pm.expect(award.giftcardValidDays.toString().length).to.be.at.least(8)
+                })
+                break;
+            default:
+            false
+            break;
+        }
+    })
+} else {
+    pm.test("awards(利앹젙) 誘?異쒕젰 ?곹깭 ?뺤씤", function () {
+        pm.expect(jsonData.awards).to.be.eql([])
+    }) 
+}

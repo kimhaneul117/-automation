@@ -1,0 +1,83 @@
+// URL 媛?몄? 肄붾꼫 ?꾩씠??蹂?????
+const requestData = pm.request.url.getPathWithQuery().split('?')
+const requestcornerId = (requestData[1].split('&'))[0].split('=')[1]
+
+/**********     Assertion     **********/
+
+// 寃곗젣?쒗깮_?좊같???몄텧 ?곹깭
+if (responseBody.length !== 0) {
+    // Response Body Data瑜?"jsonData" 蹂?섏뿉 ???
+    var jsonData = JSON.parse(responseBody);
+
+    pm.test("?좊같??理쒖냼 2媛?~ 理쒕? 10媛?異쒕젰 ?뺤씤", function () {
+        pm.expect(jsonData.banners).to.have.lengthOf.within(2, 10);
+    })
+
+    pm.test("肄붾꼫?꾩씠??cornerId) ?뺤긽 異쒕젰", function () {
+        pm.expect(jsonData.cornerId).to.eql(requestcornerId)
+    })
+
+    pm.test("肄붾꼫紐?conerNmae) ?뺤긽 異쒕젰", function () {
+        try {
+            pm.expect(jsonData.cornerName === null).to.be.true;
+        } catch {
+            pm.expect(jsonData.cornerName).to.be.a('String')
+        }
+    })
+
+    // 怨좎젙 1, 2踰덉쓣 ?쒖쇅???섎㉧吏 肄붾꼫 ?쒖꽌 以묒뿉 ?몄텧
+    pm.test("肄붾꼫 ?쒖꽌(cornerOrder) ?뺤긽 異쒕젰", function () {
+        pm.expect(jsonData.cornerOrder).to.have.within(3, 18);
+    })
+
+    jsonData.banners.forEach((banner, i) => {
+        pm.test("紐⑤컮?쇰같?덉씠誘몄?寃쎈줈(mobileBannerImageUrl)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(banner.mobileBannerImageUrl).to.not.be.null;
+            pm.expect(banner.mobileBannerImageUrl).to.be.a('String')
+            pm.expect(banner.mobileBannerImageUrl).to.include("https://stg-images-kr.amoremall.com")
+        })
+
+        pm.test("紐⑤컮?쇰같?덈?泥댄뀓?ㅽ듃(mobileBannerReplaceText)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+            try { // ?띿뒪??誘몄엯????NULL 泥섎━
+                pm.expect(banner.mobileBannerReplaceText === null).to.be.true;
+            } catch {
+                pm.expect(banner.mobileBannerReplaceText).to.not.be.null;
+                pm.expect(banner.mobileBannerReplaceText).to.be.a('String')
+            }
+        })
+
+        pm.test("PC諛곕꼫?대?吏寃쎈줈(pcBannerImageUrl)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+            try {
+                pm.expect(banner.pcBannerImageUrl === "").to.be.true;
+            } catch {
+                pm.expect(banner.pcBannerImageUrl).to.not.be.null;
+                pm.expect(banner.pcBannerImageUrl).to.be.a('String')
+                pm.expect(banner.pcBannerImageUrl).to.include("https://stg-images-kr.amoremall.com")
+            }
+        })
+
+        pm.test("PC諛곕꼫?泥댄뀓?ㅽ듃(pcBannerReplaceText)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+            try {
+                pm.expect(banner.pcBannerReplaceText === null).to.be.true;
+            } catch {
+                pm.expect(banner.pcBannerReplaceText).to.not.be.null;
+                pm.expect(banner.pcBannerReplaceText).to.be.a('String')
+            }
+        })
+
+        pm.test("留곹겕URL(linkUrl)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(banner.linkUrl).to.not.be.null;
+            const url = banner.linkUrl.split('/', 3)[2]
+            pm.expect(url).to.oneOf(['www.naver.com', 'www-ecp-stgrenew.amoremall.com', 'www.amoremall.com'])
+        })
+
+        pm.test("諛곌꼍?됱긽(backgroundColor)_" + [i + 1] + " ?뺤긽 異쒕젰", function () {
+            pm.expect(banner.backgroundColor).to.be.a('String')
+        })
+    })
+// 寃곗젣?쒗깮_?좊같??誘몃끂異??곹깭
+} else {
+    pm.test("寃곗젣?쒗깮_?좊같??誘몃끂異??곹깭 ?뺤씤", function () {
+        pm.response.to.have.body('');
+    })
+}

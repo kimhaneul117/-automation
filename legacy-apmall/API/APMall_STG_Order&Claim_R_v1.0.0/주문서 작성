@@ -1,0 +1,35 @@
+// Response Body Data瑜?"jsonData" 蹂?섏뿉 ???
+var jsonData = pm.response.json();
+
+// Environments??蹂?????
+pm.environment.set("ordSn", jsonData.ordSn);
+pm.environment.set("ordNo", jsonData.ordNo);
+pm.environment.set('payAmt', jsonData.ordHistEx.finalPamtPcur)
+
+/***************************************/
+/**********   Assertion   **********/
+/***************************************/
+
+// 寃곗젣湲덉븸 ?뺤씤
+pm.test("寃곗젣湲덉븸 ?뺤긽 異쒕젰"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(7500)
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(parseInt(pm.environment.get('payAmt')))
+})
+
+// ?곹뭹 ?뺤씤
+const prodSns_res = []
+jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
+    if(ordHistProdEx.ordHistProdTypeCode === "Ord") {
+        prodSns_res.push(ordHistProdEx.ordProdEx.prodSn)
+    }
+})
+console.log(prodSns_res)
+
+const prodSns_env = []
+prodSns_env.push(JSON.parse(pm.environment.get('?⑤씪?몄긽?뉯')).prodSn)
+console.log(prodSns_env)
+
+pm.test("?곹뭹 ?뺤긽 異쒕젰 ?뺤씤 : ?⑤씪?몄긽?뉯"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(prodSns_res).to.have.members(prodSns_env)
+});
+

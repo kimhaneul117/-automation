@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-mobile-payment-engine",
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node src/runScenario.js scenarios/payment-and-cancel.yaml",
+    "test:fail": "node src/runScenario.js scenarios/negative-case.yaml"
+  },
+  "dependencies": {
+    "yaml": "^2.6.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "portfolio-playwright-payment-ui",
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "demo": "node demo/server.js",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed"
+  },
+  "dependencies": {
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

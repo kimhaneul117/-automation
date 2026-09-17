@@ -1,0 +1,59 @@
+name: MOBILE_PAYMENT_AND_CANCEL
+description: 승인부터 취소까지 TID를 연결하는 샘플 시나리오
+
+variables:
+  AMOUNT: "1000"
+  CARRIER: "SAMPLE"
+  ORDER_ID: "PORTFOLIO-ORDER-001"
+
+steps:
+  - name: 결제 요청
+    command: ITEM_SEND
+    params:
+      amount: "${AMOUNT}"
+      carrier: "${CARRIER}"
+      orderId: "${ORDER_ID}"
+    expect:
+      RESULT:
+        equals: "SUCCESS"
+      TID:
+        required: true
+        regex: "^T[0-9]{14}[A-Z0-9]{4}$"
+      DATE:
+        isoTimeWithinSeconds: 5
+    extract:
+      PAYMENT_TID: "TID"
+
+  - name: 결제 승인
+    command: DELIVERY
+    params:
+      tid: "${PAYMENT_TID}"
+      amount: "${AMOUNT}"
+    expect:
+      RESULT:
+        equals: "SUCCESS"
+      TID:
+        equals: "${PAYMENT_TID}"
+
+  - name: 결과 보고
+    command: REPORT
+    params:
+      tid: "${PAYMENT_TID}"
+    expect:
+      RESULT:
+        equals: "SUCCESS"
+      STATUS:
+        oneOf: ["PAID", "CONFIRMED"]
+
+  - name: 결제 취소
+    command: CANCEL
+    params:
+      tid: "${PAYMENT_TID}"
+      amount: "${AMOUNT}"
+    expect:
+      RESULT:
+        equals: "SUCCESS"
+      TID:
+        equals: "${PAYMENT_TID}"
+      CANCEL_DATE:
+        isoTimeWithinSeconds: 5

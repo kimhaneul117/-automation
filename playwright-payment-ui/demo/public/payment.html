@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>Portfolio Payment Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; width: 420px; margin: 40px auto; }
+    label { display: block; margin-top: 12px; }
+    input, select, button { padding: 8px; margin-top: 4px; width: 100%; box-sizing: border-box; }
+    iframe { width: 100%; height: 80px; border: 1px solid #ddd; }
+    .hidden { display: none; }
+    button.ready { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>휴대폰결제 Demo</h1>
+
+  <iframe id="terms-frame" src="/terms.html" title="약관"></iframe>
+
+  <label>
+    통신사선택
+    <select id="carrier" aria-label="통신사선택">
+      <option value="">선택</option>
+      <option value="SKT">SKT</option>
+      <option value="KT">KT</option>
+      <option value="LGU">LGU+</option>
+    </select>
+  </label>
+
+  <label>
+    휴대폰번호
+    <input aria-label="휴대폰번호" maxlength="11" />
+  </label>
+
+  <label>
+    주민번호 앞 6자리
+    <input id="birth-front" aria-label="주민번호 앞 6자리" maxlength="6" />
+  </label>
+
+  <label>
+    주민번호 뒤 1자리
+    <input id="birth-back" aria-label="주민번호 뒤 1자리" maxlength="1" />
+  </label>
+
+  <button id="request-auth">인증 요청</button>
+
+  <div id="auth-panel" class="hidden">
+    <p>인증방식: <strong id="auth-mode"></strong></p>
+
+    <div id="pass-message" class="hidden">
+      <p>App Push가 오지 않을 경우 App을 다시 실행해 주세요.</p>
+      <button id="switch-sms">SMS 인증으로 전환</button>
+    </div>
+
+    <div id="sms-area" class="hidden">
+      <p>인증번호 유효시간 <span id="otp-timer">03:00</span></p>
+      <label>
+        인증번호
+        <input id="otp" aria-label="인증번호" maxlength="6" />
+      </label>
+    </div>
+  </div>
+
+  <button id="pay" disabled>결제하기</button>
+  <p id="payment-result"></p>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const initialMode = params.get('mode') === 'sms' ? 'SMS' : 'PASS';
+
+  const birthFront = document.querySelector('#birth-front');
+  const birthBack = document.querySelector('#birth-back');
+
+  birthFront.addEventListener('input', () => {
+    if (birthFront.value.length === 6) birthBack.focus();
+  });
+
+  const authPanel = document.querySelector('#auth-panel');
+  const authMode = document.querySelector('#auth-mode');
+  const passMessage = document.querySelector('#pass-message');
+  const smsArea = document.querySelector('#sms-area');
+  const otp = document.querySelector('#otp');
+  const pay = document.querySelector('#pay');
+
+  function renderMode(mode) {
+    authPanel.classList.remove('hidden');
+    authMode.textContent = mode;
+
+    passMessage.classList.toggle('hidden', mode !== 'PASS');
+    smsArea.classList.toggle('hidden', mode !== 'SMS');
+  }
+
+  document.querySelector('#request-auth').addEventListener('click', () => {
+    renderMode(initialMode);
+  });
+
+  document.querySelector('#switch-sms').addEventListener('click', () => {
+    renderMode('SMS');
+  });
+
+  otp.addEventListener('input', () => {
+    const ready = otp.value.length === 6;
+    pay.disabled = !ready;
+    pay.classList.toggle('ready', ready);
+  });
+
+  pay.addEventListener('click', () => {
+    document.querySelector('#payment-result').textContent = '결제가 완료되었습니다.';
+  });
+
+  let seconds = 180;
+  setInterval(() => {
+    if (authMode.textContent !== 'SMS' || seconds <= 0) return;
+    seconds -= 1;
+    const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const ss = String(seconds % 60).padStart(2, '0');
+    document.querySelector('#otp-timer').textContent = `${mm}:${ss}`;
+  }, 1000);
+</script>
+</body>
+</html>

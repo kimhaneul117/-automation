@@ -1,0 +1,56 @@
+/***************************************/
+/**********   Set Variable   **********/
+/***************************************/
+// Response Body Data瑜?"jsonData" 蹂?섏뿉 ???
+var jsonData = pm.response.json();
+
+// Environments??蹂?????
+pm.environment.set("payAmt", jsonData.ordHistEx.finalPamtPcur);
+
+/***************************************/
+/**********   Assertion   **********/
+/***************************************/
+
+// 寃곗젣湲덉븸 ?뺤씤
+pm.test("寃곗젣湲덉븸 ?뺤긽 異쒕젰"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(3500)
+    pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(parseInt(pm.environment.get('payAmt')))
+})
+
+// ?곹뭹 ?뺤씤
+const prodSns_res = []
+jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
+    if(ordHistProdEx.ordHistProdTypeCode === "Ord") {
+        prodSns_res.push(ordHistProdEx.ordProdEx.prodSn)
+    }
+})
+console.log(prodSns_res)
+
+const prodSns_env = []
+prodSns_env.push(JSON.parse(pm.environment.get('?⑤씪?몄긽?뉯')).prodSn)
+console.log(prodSns_env)
+
+pm.test("?곹뭹 ?뺤긽 異쒕젰 ?뺤씤 : ?⑤씪?몄긽?뉯"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    pm.expect(prodSns_res).to.have.members(prodSns_env)
+});
+
+// 荑좏룿 ?곸슜 ?뺤씤
+pm.test("荑좏룿_?좎씤A : " + pm.environment.get("荑좏룿_?좎씤A_荑좏룿紐?)+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    // 二쇰Ц?대젰?곹뭹紐⑸줉-荑좏룿紐⑸줉 ?좎씤湲덉븸 ?⑷퀎
+    const coupons = []
+    jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
+        const coupon = ordHistProdEx.ordHistProdCouponExList.find(ordHistProdCouponEx => ordHistProdCouponEx.couponSn == pm.environment.get("荑좏룿_?좎씤A_couponSn"))
+        if(coupon != undefined) { coupons.push(coupon) }
+    })
+    const sumDcAmt = coupons.map(e => e.dcAmt).reduce((prev, curr) => prev + curr, 0);
+    // 二쇰Ц?대젰湲덉븸紐⑸줉-?좎씤湲덉븸
+    const amtPcur = jsonData.ordHistEx.ordHistAmtExList.find(ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === 'ProdUnitCouponDc').amtPcur
+    // ??湲덉븸 鍮꾧탳
+    pm.expect(sumDcAmt).to.be.eql(amtPcur)
+});
+
+// 荑좏룿_諛곗넚鍮껦
+pm.test("荑좏룿_諛곗넚鍮껦 : " + pm.environment.get("荑좏룿_諛곗넚鍮껦_荑좏룿紐?)+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+    const shipFeePromoDc = jsonData.ordHistEx.ordHistAmtExList.find(ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === "ShipFeePromoDc")
+    pm.expect(shipFeePromoDc.amtPcur).to.eql(2500)
+});
