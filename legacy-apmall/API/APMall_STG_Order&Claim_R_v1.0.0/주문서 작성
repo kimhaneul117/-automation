@@ -1,7 +1,7 @@
-// Response Body Data瑜?"jsonData" 蹂?섏뿉 ???
+// Response Body Data를 "jsonData" 변수에 저장
 var jsonData = pm.response.json();
 
-// Environments??蹂?????
+// Environment에 변수 저장
 pm.environment.set("ordSn", jsonData.ordSn);
 pm.environment.set("ordNo", jsonData.ordNo);
 pm.environment.set('payAmt', jsonData.ordHistEx.finalPamtPcur)
@@ -10,13 +10,13 @@ pm.environment.set('payAmt', jsonData.ordHistEx.finalPamtPcur)
 /**********   Assertion   **********/
 /***************************************/
 
-// 寃곗젣湲덉븸 ?뺤씤
-pm.test("寃곗젣湲덉븸 ?뺤긽 異쒕젰"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+// 결제금액 확인
+pm.test("결제금액 정상 출력"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
     pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(7500)
     pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(parseInt(pm.environment.get('payAmt')))
 })
 
-// ?곹뭹 ?뺤씤
+// 상품 확인
 const prodSns_res = []
 jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
     if(ordHistProdEx.ordHistProdTypeCode === "Ord") {
@@ -26,10 +26,9 @@ jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
 console.log(prodSns_res)
 
 const prodSns_env = []
-prodSns_env.push(JSON.parse(pm.environment.get('?⑤씪?몄긽?뉯')).prodSn)
+prodSns_env.push(JSON.parse(pm.environment.get('쿠폰_할인C_배송비')).prodSn)
 console.log(prodSns_env)
 
-pm.test("?곹뭹 ?뺤긽 異쒕젰 ?뺤씤 : ?⑤씪?몄긽?뉯"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+pm.test("상품 정상 출력 확인"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
     pm.expect(prodSns_res).to.have.members(prodSns_env)
 });
-

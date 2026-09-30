@@ -1,67 +1,92 @@
 /***************************************/
 /**********   Set Variable   **********/
 /***************************************/
-// Response Body Data瑜?"jsonData" 蹂?섏뿉 ???
+
+// Response Body Data를 "jsonData" 변수에 저장
 var jsonData = pm.response.json();
 
-// 二쇰Ц痍⑥냼?곹뭹 ???
+// 주문취소 상품 목록 저장
 const ordCancelProdList = []
 
 jsonData.ordHistEx.ordHistProdExList.forEach((ordHistProdEx) => {
     console.log(ordHistProdEx.ordHistProdNo, ordHistProdEx.ordQty)
+
     let ordCancelProd = {
         ordHistProdNo: ordHistProdEx.ordHistProdNo,
         cancelQty: ordHistProdEx.ordQty,
         cancelReasonSn: 22
     }
+
     ordCancelProdList.push(ordCancelProd)
 })
+
 pm.environment.set("ordCancelProdList", JSON.stringify(ordCancelProdList))
 
 /***************************************/
 /**********   Assertion   **********/
 /***************************************/
 
-// 寃곗젣湲덉븸 ?뺤씤
-pm.test("寃곗젣湲덉븸 ?뺤긽 異쒕젰"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+// 결제금액 확인
+pm.test("결제금액 정상 출력"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
     pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(3500)
     pm.expect(jsonData.ordHistEx.finalPamtPcur).to.eql(parseInt(pm.environment.get('payAmt')))
 })
 
-// ?곹뭹 ?뺤씤
+// 상품 확인
 const prodSns_res = []
+
 jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
     if(ordHistProdEx.ordHistProdTypeCode === "Ord") {
         prodSns_res.push(ordHistProdEx.ordProdEx.prodSn)
     }
 })
+
 console.log(prodSns_res)
 
 const prodSns_env = []
-prodSns_env.push(JSON.parse(pm.environment.get('?⑤씪?몄긽?뉯')).prodSn)
+prodSns_env.push(JSON.parse(pm.environment.get('단일상품')).prodSn)
+
 console.log(prodSns_env)
 
-pm.test("?곹뭹 ?뺤긽 異쒕젰 ?뺤씤 : ?⑤씪?몄긽?뉯"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+pm.test("상품 정상 출력 확인 : 단일상품"+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
     pm.expect(prodSns_res).to.have.members(prodSns_env)
 });
 
-// 荑좏룿 ?곸슜 ?뺤씤
-pm.test("荑좏룿_?좎씤A : " + pm.environment.get("荑좏룿_?좎씤A_荑좏룿紐?)+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
-    // 二쇰Ц?대젰?곹뭹紐⑸줉-荑좏룿紐⑸줉 ?좎씤湲덉븸 ?⑷퀎
+// 쿠폰 적용 확인
+pm.test("쿠폰_할인A : " + pm.environment.get("쿠폰_할인A_쿠폰명")+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+
+    // 주문이력 상품목록의 쿠폰목록에서 할인금액 합계 계산
     const coupons = []
+
     jsonData.ordHistEx.ordHistProdExList.forEach(ordHistProdEx => {
-        const coupon = ordHistProdEx.ordHistProdCouponExList.find(ordHistProdCouponEx => ordHistProdCouponEx.couponSn == pm.environment.get("荑좏룿_?좎씤A_couponSn"))
-        if(coupon != undefined) { coupons.push(coupon) }
+        const coupon = ordHistProdEx.ordHistProdCouponExList.find(
+            ordHistProdCouponEx => ordHistProdCouponEx.couponSn == pm.environment.get("쿠폰_할인A_couponSn")
+        )
+
+        if(coupon != undefined) {
+            coupons.push(coupon)
+        }
     })
-    const sumDcAmt = coupons.map(e => e.dcAmt).reduce((prev, curr) => prev + curr, 0);
-    // 二쇰Ц?대젰湲덉븸紐⑸줉-?좎씤湲덉븸
-    const amtPcur = jsonData.ordHistEx.ordHistAmtExList.find(ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === 'ProdUnitCouponDc').amtPcur
-    // ??湲덉븸 鍮꾧탳
+
+    const sumDcAmt = coupons
+        .map(e => e.dcAmt)
+        .reduce((prev, curr) => prev + curr, 0);
+
+    // 주문이력 금액목록에서 상품단위 쿠폰 할인금액 조회
+    const amtPcur = jsonData.ordHistEx.ordHistAmtExList.find(
+        ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === 'ProdUnitCouponDc'
+    ).amtPcur
+
+    // 할인금액 비교
     pm.expect(sumDcAmt).to.be.eql(amtPcur)
 });
 
-// 荑좏룿_諛곗넚鍮껦
-pm.test("荑좏룿_諛곗넚鍮껦 : " + pm.environment.get("荑좏룿_諛곗넚鍮껦_荑좏룿紐?)+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
-    const shipFeePromoDc = jsonData.ordHistEx.ordHistAmtExList.find(ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === "ShipFeePromoDc")
+// 쿠폰 배송비 적용 확인
+pm.test("쿠폰_배송비 : " + pm.environment.get("쿠폰_배송비_쿠폰명")+" (cartSn : "+pm.environment.get('cartSn')+", "+"ordNo : "+pm.environment.get('ordNo')+")", function () {
+
+    const shipFeePromoDc = jsonData.ordHistEx.ordHistAmtExList.find(
+        ordHistAmtEx => ordHistAmtEx.ordHistAmtTypeCode === "ShipFeePromoDc"
+    )
+
     pm.expect(shipFeePromoDc.amtPcur).to.eql(2500)
 });
