@@ -1,27 +1,28 @@
-    def test_024_BEST_ï§ë¡®ì” _æ´Ñ‰â„“??self):
+    def test_024_BEST_¸¹ÀÌ_±¸¸ÅÇÑ(self):
         try:
-            ### ??###
-            self.interact_by_xpath('//*[@text="BEST"]')  # BEST ???ëŒ€â”ƒ
+            ### È¨ ###
+            self.interact_by_xpath('//*[@text="BEST"]')  # BEST ÅÇ Å¬¸¯
 
-            ### BEST ??###
-            ## ï§ë¡®ì”  æ´Ñ‰â„“????
-            self.interact_by_id('com.amorepacific.amorepacificmall:id/best_tab', click=False)  # BEST ??ê¶§ ???ê³¸ë¿­ ?ëº¤ì”¤
-            self.interact_by_xpath('//*[@text="ï§ë¡®ì”  æ´Ñ‰â„“??][@selected="true"]', click=False)  # ï§ë¡®ì”  æ´Ñ‰â„“?????ì’–ê½¦???ê³¹ê¹­ ?ëº¤ì”¤
-            self.interact_by_xpath('//android.widget.TextView[@text="?ì‡¨ì»™"]', click=False)  # ?ì‡¨ì»™ ?ì¢ê¹® ?ëº¤ì”¤
-            self.interact_by_xpath('(//android.widget.LinearLayout/android.view.ViewGroup[2])[1]', click=False)  # ç¥ë‡ë¦°??è¸°ê¾ªë“‰ ?ëº¤ì”¤
-            self.interact_by_xpath('//android.widget.TextView[@text="ç§»ëŒ„ë€’æ€¨ì¢Šâ”"]', click=False)  # ç§»ëŒ„ë€’æ€¨ì¢Šâ” ?ì¢ê¹® ?ëº¤ì”¤
+            ### BEST ÅÇ ###
+            ## ¸¹ÀÌ ±¸¸ÅÇÑ ÅÇ ##
+            self.interact_by_id('com.amorepacific.amorepacificmall:id/best_tab', click=False)  # BEST ÅÇ ¿µ¿ª È®ÀÎ
+            self.interact_by_xpath('//*[@text="¸¹ÀÌ ±¸¸ÅÇÑ"][@selected="true"]', click=False)  # ¸¹ÀÌ ±¸¸ÅÇÑ ÅÇ È°¼ºÈ­ »óÅÂ È®ÀÎ
+            self.interact_by_xpath('//android.widget.TextView[@text="¿¬·É´ë"]', click=False)  # ¿¬·É´ë ¼±ÅÃ È®ÀÎ
+            self.interact_by_xpath('(//android.widget.LinearLayout/android.view.ViewGroup[2])[1]', click=False)  # ÃÊ±âÈ­ ¹öÆ° È®ÀÎ
+            self.interact_by_xpath('//android.widget.TextView[@text="Ä«Å×°í¸®"]', click=False)  # Ä«Å×°í¸® ¼±ÅÃ È®ÀÎ
 
-            # æ€¨ê¾©ì ™è¹‚??ëš¯ì ?ëº£ë‚« æ¹²ê³•ì»²?ì‡°ì¤ˆ ?ê³•ì¡Š?Â€ ?ë¨®ë£ ?ëª…ë˜¿ è«›??ì’–ê½¦???ê³¹ê¹­ ?ëº¤ì”¤
+            # °èÁ¤Á¤º¸ È¸¿ø Á¤º¸¸¦ ±â¹İÀ¸·Î ¿¬·É´ë ÀÚµ¿ ¼¼ÆÃ ¹× È°¼ºÈ­ »óÅÂ È®ÀÎ
             if TCFG.port == '2009':
-                self.interact_by_xpath('//*[@text="20?Â€ ?ëŒ„ë¸¯"][@selected="true"]', click=False)  # 20?Â€ ?ëŒ„ë¸¯ ?ëº¤ì”¤
+                self.interact_by_xpath('//*[@text="20´ë ÀÌÇÏ"][@selected="true"]', click=False)  # 20´ë ÀÌÇÏ È®ÀÎ
             if TCFG.port == '2001':
-                self.interact_by_xpath('//*[@text="30?Â€"][@selected="true"]', click=False)  # 30?Â€ ?ëº¤ì”¤
+                self.interact_by_xpath('//*[@text="30´ë"][@selected="true"]', click=False)  # 30´ë È®ÀÎ
             if TCFG.port == '7778':
-                self.interact_by_xpath('//*[@text="40?Â€"][@selected="true"]', click=False)  # 40?Â€ ?ëº¤ì”¤
+                self.interact_by_xpath('//*[@text="40´ë"][@selected="true"]', click=False)  # 40´ë È®ÀÎ
             if TCFG.port == '2023':
-                self.interact_by_xpath('//*[@text="40?Â€"][@selected="true"]', click=False)  # 40?Â€ ?ëº¤ì”¤
+                self.interact_by_xpath('//*[@text="40´ë"][@selected="true"]', click=False)  # 40´ë È®ÀÎ
 
-            self.interact_by_xpath('//android.widget.TextView[@text="é‡‰ëš®ì˜–??]', click=False)  # é‡‰ëš®ì˜–???ì¢ê¹® ?ëº¤ì”¤
+            self.interact_by_xpath('//android.widget.TextView[@text="ºê·£µå"]', click=False)  # ºê·£µå ¼±ÅÃ È®ÀÎ
+
         except:
             self.capture_screen()
             self.assertEqual(0, 19)
@@ -29,82 +30,184 @@
             print(f"{sys._getframe(0).f_code.co_name} Passed")
             TCFG.is_passed = True
 
-    def test_025_BEST_ï§ë¡®ì” _?ëŒ€â”ƒ??self):
+
+    def test_025_BEST_¸¹ÀÌ_Å¬¸¯ÇÑ(self):
         try:
-            ### BEST ??###
-            self.interact_by_xpath('//*[@resource-id="com.amorepacific.amorepacificmall:id/radio_image"]/..//*[@text="ï§ë¡®ì”  ?ëŒ€â”ƒ??]')  # ï§ë¡®ì”  ?ëŒ€â”ƒ?????ì¢ê¹®
+            ### BEST ÅÇ ###
+            self.interact_by_xpath(
+                '//*[@resource-id="com.amorepacific.amorepacificmall:id/radio_image"]/..//*[@text="¸¹ÀÌ Å¬¸¯ÇÑ"]'
+            )  # ¸¹ÀÌ Å¬¸¯ÇÑ ÅÇ ¼±ÅÃ
 
-            ## ï§ë¡®ì”  ?ëŒ€â”ƒ????
-            self.interact_by_xpath('//*[@text="ï§ë¡®ì”  ?ëŒ€â”ƒ??][@selected="true"]', click=False)  # ï§ë¡®ì”  ?ëŒ€â”ƒ?????ì’–ê½¦???ê³¹ê¹­ ?ëº¤ì”¤
-            self.interact_by_xpath('//android.widget.TextView[@text="ç§»ëŒ„ë€’æ€¨ì¢Šâ”"]')  # ç§»ëŒ„ë€’æ€¨ì¢Šâ” ?ì¢ê¹®
+            ## ¸¹ÀÌ Å¬¸¯ÇÑ ÅÇ ##
+            self.interact_by_xpath('//*[@text="¸¹ÀÌ Å¬¸¯ÇÑ"][@selected="true"]', click=False)  # ¸¹ÀÌ Å¬¸¯ÇÑ ÅÇ È°¼ºÈ­ »óÅÂ È®ÀÎ
+            self.interact_by_xpath('//android.widget.TextView[@text="Ä«Å×°í¸®"]')  # Ä«Å×°í¸® ¼±ÅÃ
 
-            ## ç§»ëŒ„ë€’æ€¨ì¢Šâ” ?ê¾ªê½£ ?ê³¸ê½­
-            self.interact_by_xpath('//android.widget.LinearLayout[1]//*[@text="?ëŒ€ì ‹ï§?]')  # ?ëŒ€ì ‹ï§??ì¢ê¹®
-            self.interact_by_xpath('//*[@text="?ëŒ€ì ‹ï§?][@selected="true"]', click=False)  # ?ëŒ€ì ‹ï§?ç§»ëŒ„ë€’æ€¨ì¢Šâ” ?ì’–ê½¦???ê³¹ê¹­ ?ëº¤ì”¤
-            self.interact_by_id('com.amorepacific.amorepacificmall:id/tv_confirm')  # ?ê³¸ìŠœ?ì„ë¦° ?ëŒ€â”ƒ
+            ## Ä«Å×°í¸® ÇÊÅÍ »ó¼¼ ##
+            self.interact_by_xpath('//android.widget.LinearLayout[1]//*[@text="Å¬·»Â¡"]')  # Å¬·»Â¡ ¼±ÅÃ
+            self.interact_by_xpath('//*[@text="Å¬·»Â¡"][@selected="true"]', click=False)  # Å¬·»Â¡ Ä«Å×°í¸® È°¼ºÈ­ »óÅÂ È®ÀÎ
+            self.interact_by_id('com.amorepacific.amorepacificmall:id/tv_confirm')  # Àû¿ëÇÏ±â Å¬¸¯
 
-            ## ï§ë¡®ì”  ?ëŒ€â”ƒ????
-            self.interact_by_xpath('(//android.widget.LinearLayout/android.view.ViewGroup[1])[2]', click=False)  # ç¥ë‡ë¦°??è¸°ê¾ªë“‰ ?ì¢? ?ëº¤ì”¤
-            self.interact_by_xpath('//android.view.ViewGroup[4]//android.widget.TextView[@text="é‡‰ëš®ì˜–??]')  # é‡‰ëš®ì˜–???ì¢ê¹®
+            ## ¸¹ÀÌ Å¬¸¯ÇÑ ÅÇ ##
+            self.interact_by_xpath('(//android.widget.LinearLayout/android.view.ViewGroup[1])[2]', click=False)  # ÃÊ±âÈ­ ¹öÆ° È®ÀÎ
+            self.interact_by_xpath('//android.view.ViewGroup[4]//android.widget.TextView[@text="ºê·£µå"]')  # ºê·£µå ¼±ÅÃ
 
-            ## é‡‰ëš®ì˜–???ê¾ªê½£ ?ê³¸ê½­
-            # ï§ë¨¯ì¨ª??ï§£ì„â” width ?ÑŠì” ï§?æ¹²ê³—??ì‡°ì¤ˆ ï§£ì„â”?ì„?æ¿¡??ë±€ì ™ ?â‘¤ì­š é‡‰ëš®ì˜–??4åª›ì’“í‰´ï§Â€ ?ì¢ê¹® ??ï§ë¨¯ì¨ª??ï§£ì„â” å¯ƒÂ€ï§?ï§ê¾ªë»¾
+            ## ºê·£µå ÇÊÅÍ »ó¼¼ ##
+            # ¸»ÁÙÀÓ Ã³¸® width »çÀÌÁî ±âÁØÀ¸·Î Ã³¸®ÇÏ¹Ç·Î Æ¯Á¤ ´Ü¸»Àº ºê·£µå 4°³±îÁö ¼±ÅÃ ÈÄ ¸»ÁÙÀÓ Ã³¸® °ËÁõ ÁøÇà
             if TCFG.dname == 'Galaxy S23':
-                # é‡‰ëš®ì˜–?ì’•ì±¸ ?ì’–ê½Œ?Â€æ¿¡?4åª›??Â€??
-                brand_1 = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[1]', 'text', By.XPATH)
-                brand_2 = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[2]', 'text', By.XPATH)
-                brand_3 = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[3]', 'text', By.XPATH)
-                brand_4 = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[4]', 'text', By.XPATH)
+                # ºê·£µå¸í ¼ø¼­´ë·Î 4°³ ÀúÀå
+                brand_1 = self.get_attri(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[1]',
+                    'text',
+                    By.XPATH
+                )
+                brand_2 = self.get_attri(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[2]',
+                    'text',
+                    By.XPATH
+                )
+                brand_3 = self.get_attri(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[3]',
+                    'text',
+                    By.XPATH
+                )
+                brand_4 = self.get_attri(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[4]',
+                    'text',
+                    By.XPATH
+                )
+
                 brand_total = [brand_1, brand_2, brand_3, brand_4]
                 return_brand = ','.join(brand_total)
-                self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[4]')  # ??è¸°ë‰ã é‡‰ëš®ì˜–???ì¢ê¹®
+
+                self.interact_by_xpath(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[4]'
+                )  # ³× ¹øÂ° ºê·£µå ¼±ÅÃ
+
             else:
-                # é‡‰ëš®ì˜–?ì’•ì±¸ ?ì’–ê½Œ?Â€æ¿¡?3åª›??Â€??
-                brand_1 = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[1]', 'text', By.XPATH)
-                brand_2 = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[2]', 'text', By.XPATH)
-                brand_3 = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[3]', 'text', By.XPATH)
+                # ºê·£µå¸í ¼ø¼­´ë·Î 3°³ ÀúÀå
+                brand_1 = self.get_attri(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[1]',
+                    'text',
+                    By.XPATH
+                )
+                brand_2 = self.get_attri(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[2]',
+                    'text',
+                    By.XPATH
+                )
+                brand_3 = self.get_attri(
+                    '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[3]',
+                    'text',
+                    By.XPATH
+                )
+
                 brand_total = [brand_1, brand_2, brand_3]
                 return_brand = ','.join(brand_total)
 
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[1]')  # ï§£?è¸°ë‰ã é‡‰ëš®ì˜–???ì¢ê¹®
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[2]')  # ??è¸°ë‰ã é‡‰ëš®ì˜–???ì¢ê¹®
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[3]')  # ??è¸°ë‰ã é‡‰ëš®ì˜–???ì¢ê¹®
-            self.interact_by_id('com.amorepacific.amorepacificmall:id/tv_confirm')  # ?ê³¸ìŠœ?ì„ë¦° ?ëŒ€â”ƒ
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[1]'
+            )  # Ã¹ ¹øÂ° ºê·£µå ¼±ÅÃ
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[2]'
+            )  # µÎ ¹øÂ° ºê·£µå ¼±ÅÃ
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_item"])[3]'
+            )  # ¼¼ ¹øÂ° ºê·£µå ¼±ÅÃ
 
-            # # ?ê¾ªê½£ ?ã…¼ì ™ ???ì¢ê¹®??é‡‰ëš®ì˜–?ì’•ì±¸ ?ê¾©ë¼±?ê³Œë¦° ?Ñ‹ë¸¿ ï§¤ì’•? 10æ¹²Â€?ë¨­í‰´ï§Â€ ?ëª„í…§ ??ï§ë¨¯ì¨ª??ï§£ì„â”
+            self.interact_by_id(
+                'com.amorepacific.amorepacificmall:id/tv_confirm'
+            )  # Àû¿ëÇÏ±â Å¬¸¯
+
+            # ÇÊÅÍ ¼³Á¤ ÈÄ ¼±ÅÃÇÑ ºê·£µå¸íÀ» ÀÌ¾îºÙ¿© Ç¥½ÃÇÏ¸ç ÃÖ´ë 10±ÛÀÚ±îÁö ³ëÃâ ÈÄ ¸»ÁÙÀÓ Ã³¸®
             # return_abb = return_brand[0:10] + '...'
             # return_brand, return_abb = return_abb, return_brand
 
-            ## ï§ë¡®ì”  ?ëŒ€â”ƒ????
-            self.interact_by_xpath('//android.widget.TextView[@text="?ëŒ€ì ‹ï§?][@selected="true"]', click=False)  # ç§»ëŒ„ë€’æ€¨ì¢Šâ” ?ëŒ€ì ‹ï§??ì¢ê¹® ?ëº¤ì”¤
+            ## ¸¹ÀÌ Å¬¸¯ÇÑ ÅÇ ##
+            self.interact_by_xpath(
+                '//android.widget.TextView[@text="Å¬·»Â¡"][@selected="true"]',
+                click=False
+            )  # Ä«Å×°í¸® Å¬·»Â¡ ¼±ÅÃ È®ÀÎ
 
-            # æ€¨ê¾©ì ™è¹‚??ëš¯ì ?ëº£ë‚« æ¹²ê³•ì»²?ì‡°ì¤ˆ ?ê³•ì¡Š?Â€ ?ë¨®ë£ ?ëª…ë˜¿ è«›??ì’–ê½¦???ê³¹ê¹­ ?ëº¤ì”¤
+            # °èÁ¤Á¤º¸ È¸¿ø Á¤º¸¸¦ ±â¹İÀ¸·Î ¿¬·É´ë ÀÚµ¿ ¼¼ÆÃ ¹× È°¼ºÈ­ »óÅÂ È®ÀÎ
             if TCFG.port == '2009':
-                self.interact_by_xpath('//*[@text="20?Â€ ?ëŒ„ë¸¯"][@selected="true"]', click=False)  # 20?Â€ ?ëŒ„ë¸¯ ?ëº¤ì”¤
-            if TCFG.port == '2001':
-                self.interact_by_xpath('//*[@text="30?Â€"][@selected="true"]', click=False)  # 30?Â€ ?ëº¤ì”¤
-            if TCFG.port == '7778':
-                self.interact_by_xpath('//*[@text="40?Â€"][@selected="true"]', click=False)  # 40?Â€ ?ëº¤ì”¤
-            if TCFG.port == '2023':
-                self.interact_by_xpath('//*[@text="40?Â€"][@selected="true"]', click=False)  # 40?Â€ ?ëº¤ì”¤
+                self.interact_by_xpath(
+                    '//*[@text="20´ë ÀÌÇÏ"][@selected="true"]',
+                    click=False
+                )  # 20´ë ÀÌÇÏ È®ÀÎ
 
-            self.interact_by_xpath('//*[@text="{}"][@selected="true"]'.format(return_brand), click=False)  # é‡‰ëš®ì˜–??> é‡‰ëš®ì˜–?ì’•ì±¸1,é‡‰ëš®ì˜–?ì’•ì±¸2,é‡‰ëš®ì˜–?ì’•ì±¸3... ?ì¢ê¹® ?ëº¤ì”¤
+            if TCFG.port == '2001':
+                self.interact_by_xpath(
+                    '//*[@text="30´ë"][@selected="true"]',
+                    click=False
+                )  # 30´ë È®ÀÎ
+
+            if TCFG.port == '7778':
+                self.interact_by_xpath(
+                    '//*[@text="40´ë"][@selected="true"]',
+                    click=False
+                )  # 40´ë È®ÀÎ
+
+            if TCFG.port == '2023':
+                self.interact_by_xpath(
+                    '//*[@text="40´ë"][@selected="true"]',
+                    click=False
+                )  # 40´ë È®ÀÎ
+
+            self.interact_by_xpath(
+                '//*[@text="{}"][@selected="true"]'.format(return_brand),
+                click=False
+            )  # ºê·£µå > ¼±ÅÃÇÑ ºê·£µå¸í ¼±ÅÃ »óÅÂ È®ÀÎ
 
             try:
-                self.interact_by_xpath('//android.widget.TextView[@text="{}"]'.format(datetime.now().strftime('%m.%d %H:%M æ¹²ê³—?')), click=False)  # ?ê¾©ì˜± ?ì¢ì­¨ ?ì’“ì»™ æ¹²ê³—? ?ëª„í…§ ?ëº¤ì”¤
-            except:
-                after_one_minute = datetime.now() - relativedelta(minutes=1)  # ?ê¾©ì˜± ?ì’“ì»™ æ¹²ê³—? 1éº???æ´Ñ‹ë¸¯æ¹²?
-                self.interact_by_xpath('//android.widget.TextView[@text="{}"]'.format(after_one_minute.strftime('%m.%d %H:%M æ¹²ê³—?')), click=False)  # ?ê¾©ì˜± ?ì¢ì­¨ ?ì’“ì»™ æ¹²ê³—? ?ëª„í…§ ?ëº¤ì”¤
+                self.interact_by_xpath(
+                    '//android.widget.TextView[@text="{}"]'.format(
+                        datetime.now().strftime('%m.%d %H:%M ±âÁØ')
+                    ),
+                    click=False
+                )  # ÇöÀç ³¯Â¥/½Ã°£ ±âÁØ ³ëÃâ È®ÀÎ
 
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/product_img"])[1]', click=False)  # ï§£?è¸°ë‰ã ?ê³¹ë­¹ ?ëŒ€?ï§Â€ ?ëº¤ì”¤
-            self.interact_by_xpath('(//android.widget.LinearLayout/android.view.ViewGroup[1])[2]')  # ç¥ë‡ë¦°???ì¢ê¹®
+            except:
+                after_one_minute = datetime.now() - relativedelta(minutes=1)  # ÇöÀç ½Ã°£ ±âÁØ 1ºĞ Àü ±¸ÇÏ±â
+
+                self.interact_by_xpath(
+                    '//android.widget.TextView[@text="{}"]'.format(
+                        after_one_minute.strftime('%m.%d %H:%M ±âÁØ')
+                    ),
+                    click=False
+                )  # 1ºĞ Àü ³¯Â¥/½Ã°£ ±âÁØ ³ëÃâ È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/product_img"])[1]',
+                click=False
+            )  # Ã¹ ¹øÂ° »óÇ° ÀÌ¹ÌÁö È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//android.widget.LinearLayout/android.view.ViewGroup[1])[2]'
+            )  # ÃÊ±âÈ­ ¼±ÅÃ
+
             sleep(1)
 
-            # 3åª›??ê¾ªê½£ ?ã…¼ì ™ ç¥ë‡ë¦°???ê³¹ê¹­ ?ëº¤ì”¤
-            self.interact_by_xpath('//android.widget.TextView[@text="ç§»ëŒ„ë€’æ€¨ì¢Šâ”"][@selected="false"]', click=False)  # ç§»ëŒ„ë€’æ€¨ì¢Šâ” ç¥ë‡ë¦°???ê³¹ê¹­ ?ëº¤ì”¤
-            self.interact_by_xpath('//android.widget.TextView[@text="?ê³•ì¡Š?Â€"][@selected="false"]', click=False)  # ?ê³•ì¡Š?Â€ ç¥ë‡ë¦°???ê³¹ê¹­ ?ëº¤ì”¤
-            self.interact_by_xpath('//android.widget.TextView[@text="é‡‰ëš®ì˜–??][@selected="false"]', click=False)  # é‡‰ëš®ì˜–??ç¥ë‡ë¦°???ê³¹ê¹­ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/product_img"])[1]', click=False)  # ï§£?è¸°ë‰ã ?ê³¹ë­¹ ?ëŒ€?ï§Â€ ?ëº¤ì”¤ (APM-45780)
+            # 3°³ ÇÊÅÍ ¼³Á¤ ÃÊ±âÈ­ »óÅÂ È®ÀÎ
+            self.interact_by_xpath(
+                '//android.widget.TextView[@text="Ä«Å×°í¸®"][@selected="false"]',
+                click=False
+            )  # Ä«Å×°í¸® ÃÊ±âÈ­ »óÅÂ È®ÀÎ
+
+            self.interact_by_xpath(
+                '//android.widget.TextView[@text="¿¬·É´ë"][@selected="false"]',
+                click=False
+            )  # ¿¬·É´ë ÃÊ±âÈ­ »óÅÂ È®ÀÎ
+
+            self.interact_by_xpath(
+                '//android.widget.TextView[@text="ºê·£µå"][@selected="false"]',
+                click=False
+            )  # ºê·£µå ÃÊ±âÈ­ »óÅÂ È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/product_img"])[1]',
+                click=False
+            )  # Ã¹ ¹øÂ° »óÇ° ÀÌ¹ÌÁö È®ÀÎ (APM-45780)
+
         except:
             self.capture_screen()
             self.assertEqual(0, 21)
@@ -112,29 +215,79 @@
             print(f"{sys._getframe(0).f_code.co_name} Passed")
             TCFG.is_passed = True
 
-    def test_026_BEST_ï§ë¡®ì” _å¯ƒÂ€?ë²ë¸³(self):
-        try:
-            ### BEST ??###
-            ## ï§ë¡®ì”  ?ëŒ€â”ƒ????
-            self.interact_by_xpath('//*[@resource-id="com.amorepacific.amorepacificmall:id/radio_image"]/..//*[@text="ï§ë¡®ì”  å¯ƒÂ€?ë²ë¸³"]')  # ï§ë¡®ì”  å¯ƒÂ€?ë²ë¸³ ???ì¢ê¹®
 
-            ## ï§ë¡®ì”  å¯ƒÂ€?ë²ë¸³ ??> ?ë©¸ë¦° ?ã…¼ì™????
+    def test_026_BEST_¸¹ÀÌ_°Ë»öÇÑ(self):
+        try:
+            ### BEST ÅÇ ###
+            ## ¸¹ÀÌ Å¬¸¯ÇÑ ÅÇ ##
+            self.interact_by_xpath(
+                '//*[@resource-id="com.amorepacific.amorepacificmall:id/radio_image"]/..//*[@text="¸¹ÀÌ °Ë»öÇÑ"]'
+            )  # ¸¹ÀÌ °Ë»öÇÑ ÅÇ ¼±ÅÃ
+
+            ## ¸¹ÀÌ °Ë»öÇÑ ÅÇ > ÀÎ±â Å°¿öµå ##
             try:
-                self.interact_by_xpath('//android.widget.TextView[@text="{}"]'.format(datetime.now().strftime('%m.%d %H:%M æ¹²ê³—?')), click=False)  # ?ê¾©ì˜± ?ì¢ì­¨ ?ì’“ì»™ æ¹²ê³—? ?ëª„í…§ ?ëº¤ì”¤
+                self.interact_by_xpath(
+                    '//android.widget.TextView[@text="{}"]'.format(
+                        datetime.now().strftime('%m.%d %H:%M ±âÁØ')
+                    ),
+                    click=False
+                )  # ÇöÀç ³¯Â¥/½Ã°£ ±âÁØ ³ëÃâ È®ÀÎ
+
             except:
-                after_one_minute = datetime.now() - relativedelta(minutes=1)  # ?ê¾©ì˜± ?ì’“ì»™ æ¹²ê³—? 1éº???æ´Ñ‹ë¸¯æ¹²?
-                self.interact_by_xpath('//android.widget.TextView[@text="{}"]'.format(after_one_minute.strftime('%m.%d %H:%M æ¹²ê³—?')), click=False)  # ?ê¾©ì˜± ?ì¢ì­¨ ?ì’“ì»™ æ¹²ê³—? ?ëª„í…§ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[1]/..//*[@text="1"]', click=False)  # ??ê¶§ 1 ?ëª„í…§ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[2]/..//*[@text="2"]', click=False)  # ??ê¶§ 2 ?ëª„í…§ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/product"])[1]', click=False)  # ??ê¶§ 1 ï§£?è¸°ë‰ã ?ê³¹ë­¹ ?ëª„í…§ ?ëº¤ì”¤
-            self.interact_by_xpath('//*[@text="?ë©¸ë¦° é‡‰ëš®ì˜–??]')  # ?ë©¸ë¦° é‡‰ëš®ì˜–?????ì¢ê¹®
+                after_one_minute = datetime.now() - relativedelta(minutes=1)  # ÇöÀç ½Ã°£ ±âÁØ 1ºĞ Àü ±¸ÇÏ±â
 
-            ## ï§ë¡®ì”  å¯ƒÂ€?ë²ë¸³ ??> ?ë©¸ë¦° é‡‰ëš®ì˜–????
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[1]/..//*[@text="1"]', click=False)  # ??ê¶§ 1 ?ëª„í…§ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[2]/..//*[@text="2"]', click=False)  # ??ê¶§ 2 ?ëª„í…§ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_logo"])[1]', click=False)  # ??ê¶§ 1 é‡‰ëš®ì˜–??æ¿¡ì’“í€¬ ?ëŒ€?ï§Â€ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_logo"])[2]', click=False)  # ??ê¶§ 2 é‡‰ëš®ì˜–??æ¿¡ì’“í€¬ ?ëŒ€?ï§Â€ ?ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/iv_like"])[1]', click=False)  # ??ê¶§ 1 é†«ë—­ë¸˜???ê¾©ì” è‚„??ëª„í…§ ?ëº¤ì”¤
+                self.interact_by_xpath(
+                    '//android.widget.TextView[@text="{}"]'.format(
+                        after_one_minute.strftime('%m.%d %H:%M ±âÁØ')
+                    ),
+                    click=False
+                )  # 1ºĞ Àü ³¯Â¥/½Ã°£ ±âÁØ ³ëÃâ È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[1]/..//*[@text="1"]',
+                click=False
+            )  # ·©Å· 1 ³ëÃâ È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[2]/..//*[@text="2"]',
+                click=False
+            )  # ·©Å· 2 ³ëÃâ È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/product"])[1]',
+                click=False
+            )  # ·©Å· 1 Ã¹ ¹øÂ° »óÇ° ³ëÃâ È®ÀÎ
+
+            self.interact_by_xpath(
+                '//*[@text="ÀÎ±â ºê·£µå"]'
+            )  # ÀÎ±â ºê·£µå ¼±ÅÃ
+
+            ## ¸¹ÀÌ °Ë»öÇÑ ÅÇ > ÀÎ±â ºê·£µå ##
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[1]/..//*[@text="1"]',
+                click=False
+            )  # ·©Å· 1 ³ëÃâ È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_ranking"])[2]/..//*[@text="2"]',
+                click=False
+            )  # ·©Å· 2 ³ëÃâ È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_logo"])[1]',
+                click=False
+            )  # ·©Å· 1 ºê·£µå ·Î°í ÀÌ¹ÌÁö È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/best_brand_logo"])[2]',
+                click=False
+            )  # ·©Å· 2 ºê·£µå ·Î°í ÀÌ¹ÌÁö È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/iv_like"])[1]',
+                click=False
+            )  # ·©Å· 1 ÁÁ¾Æ¿ä ¾ÆÀÌÄÜ ³ëÃâ È®ÀÎ
+
         except:
             self.capture_screen()
             self.assertEqual(0, 21)
@@ -142,16 +295,28 @@
             print(f"{sys._getframe(0).f_code.co_name} Passed")
             TCFG.is_passed = True
 
-    def test_027_BEST_?ì‡°???ï§ìšŒë’—(self):
-        try:
-            ### BEST ??###
-            ## ï§ë¡®ì”  å¯ƒÂ€?ë²ë¸³ ??
-            self.interact_by_xpath('//*[@resource-id="com.amorepacific.amorepacificmall:id/radio_image"]/..//*[@text="?ì‡°???ï§ìšŒë’—"]')  # ?ì‡°???ï§ìšŒë’— ???ì¢ê¹®
-            # ?ëš¯ì, ?ì‡°? æ€¨ì¢Š? ?ã…¼ì ™ = Y
 
-            ## ?ì‡°???ï§ìšŒë’— ??
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/ranking_tag"])[1]/..//*[@text="1"]', click=False)  # ï§£?è¸°ë‰ã ?ê³¹ë­¹ è¸°ëŠìƒ‡ 1 ?ë¿ë’ª???ëº¤ì”¤
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/ranking_tag"])[2]/..//*[@text="2"]', click=False)  # ??è¸°ë‰ã ?ê³¹ë­¹ è¸°ëŠìƒ‡ 2 ?ë¿ë’ª???ëº¤ì”¤
+    def test_027_BEST_³ª¿¡°Ô_¸Â´Â(self):
+        try:
+            ### BEST ÅÇ ###
+            ## ¸¹ÀÌ °Ë»öÇÑ ÅÇ ##
+            self.interact_by_xpath(
+                '//*[@resource-id="com.amorepacific.amorepacificmall:id/radio_image"]/..//*[@text="³ª¿¡°Ô ¸Â´Â"]'
+            )  # ³ª¿¡°Ô ¸Â´Â ÅÇ ¼±ÅÃ
+
+            # È¸¿ø, ÇÇºÎ °í¹Î ¼³Á¤ = Y
+
+            ## ³ª¿¡°Ô ¸Â´Â ÅÇ ##
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/ranking_tag"])[1]/..//*[@text="1"]',
+                click=False
+            )  # Ã¹ ¹øÂ° »óÇ° ¹øÈ£ 1 ÅØ½ºÆ® È®ÀÎ
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/ranking_tag"])[2]/..//*[@text="2"]',
+                click=False
+            )  # µÎ ¹øÂ° »óÇ° ¹øÈ£ 2 ÅØ½ºÆ® È®ÀÎ
+
         except:
             self.capture_screen()
             self.assertEqual(0, 21)
@@ -159,27 +324,49 @@
             print(f"{sys._getframe(0).f_code.co_name} Passed")
             TCFG.is_passed = True
 
-    def test_028_BEST_é†«ë—­ë¸˜???ëº¤ì”¤(self):
+
+    def test_028_BEST_ÁÁ¾Æ¿ä_È®ÀÎ(self):
         try:
-            ### BEST ??###
-            ## ?ì‡°???ï§ìšŒë’— ??
-            best_prd = self.get_attri('(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_product_name"])[1]', 'text', By.XPATH)  # BEST ï§£?è¸°ë‰ã ?ê³¹ë­¹ > ?ëŒ€ì«« ?Â€??
-            self.interact_by_xpath('(//android.view.View[@resource-id="com.amorepacific.amorepacificmall:id/view_overlay"])[1]')  # ï§£ãƒ«ì¾²ï§??ê³¹ë­¹ ?ëŒ€â”ƒ
+            ### BEST ÅÇ ###
+            ## ³ª¿¡°Ô ¸Â´Â ÅÇ ##
+            best_prd = self.get_attri(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/tv_product_name"])[1]',
+                'text',
+                By.XPATH
+            )  # BEST Ã¹ ¹øÂ° »óÇ° ÀÌ¸§ ÀúÀå
+
+            self.interact_by_xpath(
+                '(//android.view.View[@resource-id="com.amorepacific.amorepacificmall:id/view_overlay"])[1]'
+            )  # Ã¹ ¹øÂ° »óÇ° Å¬¸¯
+
             sleep(3)
 
-            ### BEST ?ê³¹ë­¹ ?ê³¸ê½­ ###
-            self.interact_by_xpath('//*[@text="é†«ë—­ë¸˜??]')  # é†«ë—­ë¸˜??è¸°ê¾ªë“‰ ?ëŒ€â”ƒ
-            TCFG.driver.back()  # BEST ?ê³¹ë­¹ ?ê³¸ê½­ > BEST ??ì‘æ¿¡??ëŒ€ë£
+            ### BEST »óÇ° »ó¼¼ ###
+            self.interact_by_xpath('//*[@text="ÁÁ¾Æ¿ä"]')  # ÁÁ¾Æ¿ä ¹öÆ° Å¬¸¯
 
-            ### BEST ??###
-            self.interact_by_id('com.amorepacific.amorepacificmall:id/iv_bottom_history_icon')  # ?ì„ë–’ ?â‰ªë€¡è«›??ë‰ë’ª?ì¢Šâ” ?ëŒ€â”ƒ
+            TCFG.driver.back()  # BEST »óÇ° »ó¼¼ > BEST ÅÇÀ¸·Î ÀÌµ¿
 
-            ### ?ì‡³ë¸¨ ?ë‰ë’ª?ì¢Šâ” ?ë¶¾ãˆƒ ###
-            TCFG.driver.swipe(TCFG.res[0] * 0.5, TCFG.res[1] * 0.5, TCFG.res[0] * 0.5, TCFG.res[1] * 0.2)  # è«›ë¬’ì‘æ¿¡?è­°ê³Œíˆ‘ ?ëŒ€ë£
+            ### BEST ÅÇ ###
+            self.interact_by_id(
+                'com.amorepacific.amorepacificmall:id/iv_bottom_history_icon'
+            )  # ÇÏ´Ü ¾×¼Ç¹Ù È÷½ºÅä¸® Å¬¸¯
+
+            ### ¼îÇÎ È÷½ºÅä¸® È­¸é ###
+            TCFG.driver.swipe(
+                TCFG.res[0] * 0.5,
+                TCFG.res[1] * 0.5,
+                TCFG.res[0] * 0.5,
+                TCFG.res[1] * 0.2
+            )  # ¹ØÀ¸·Î Á¶±İ ÀÌµ¿
+
             sleep(1.5)
 
-            # ?ì‡³ë¸¨ ?ë‰ë’ª?ì¢Šâ” > BEST ï§£?è¸°ë‰ã ?ê³¹ë­¹ è­°ëŒì˜± ?Ñ‰? ?ëº¤ì”¤
-            self.interact_by_xpath('//android.widget.TextView[contains(@text, "{}")]'.format(best_prd), click=False)
+            # ¼îÇÎ È÷½ºÅä¸® > BEST Ã¹ ¹øÂ° »óÇ° Á¸Àç ¿©ºÎ È®ÀÎ
+            self.interact_by_xpath(
+                '//android.widget.TextView[contains(@text, "{}")]'.format(best_prd),
+                click=False
+            )
+
         except:
             self.capture_screen()
             self.assertEqual(0, 22)
@@ -187,18 +374,36 @@
             print(f"{sys._getframe(0).f_code.co_name} Passed")
             TCFG.is_passed = True
 
-    def test_029_BEST_é†«ë—­ë¸˜??ç—â‘¥ëƒ¼(self):
+
+    def test_029_BEST_ÁÁ¾Æ¿ä_Ãë¼Ò(self):
         try:
-            ### ?ì‡³ë¸¨ ?ë‰ë’ª?ì¢Šâ” ?ë¶¾ãˆƒ ###
-            like_count = self.get_attri('com.amorepacific.amorepacificmall:id/total_count_text', 'text', By.ID).split('åª›?)  # 'nåª›ì’–ì“½ é†«ë—­ë¸˜???ê³¹ë­¹???ë‰ë’¿?ëˆë–.' n ?Â€??
-            self.interact_by_xpath('(//*[@resource-id="com.amorepacific.amorepacificmall:id/iv_like"])[1]')  # ï§£?è¸°ë‰ã ?ê³¹ë­¹ é†«ë—­ë¸˜??ç—â‘¥ëƒ¼
-            
-            # æ¹²ê³—ã€ˆ é†«ë—­ë¸˜???ê³¹ë­¹ 2åª›??ëŒê¸½??å¯ƒìŒìŠ¦
+            ### ¼îÇÎ È÷½ºÅä¸® È­¸é ###
+            like_count = self.get_attri(
+                'com.amorepacific.amorepacificmall:id/total_count_text',
+                'text',
+                By.ID
+            ).split('°³')  # 'n°³ÀÇ ÁÁ¾Æ¿ä »óÇ°ÀÌ ÀÖ½À´Ï´Ù.'¿¡¼­ n ÀúÀå
+
+            self.interact_by_xpath(
+                '(//*[@resource-id="com.amorepacific.amorepacificmall:id/iv_like"])[1]'
+            )  # Ã¹ ¹øÂ° »óÇ° ÁÁ¾Æ¿ä Ãë¼Ò
+
+            # ±âÁ¸ ÁÁ¾Æ¿ä »óÇ°ÀÌ 2°³ ÀÌ»óÀÎ °æ¿ì
             try:
-                self.interact_by_xpath('//android.widget.TextView[@text="{}åª›ì’–ì“½ é†«ë—­ë¸˜???ê³¹ë­¹???ë‰ë’¿?ëˆë–."]'.format(int(like_count[0])-1), click=False)  # é†«ë—­ë¸˜???ê³¹ë­¹ åª›?ë‹” -1 ?ëº¤ì”¤
-            # æ¹²ê³—ã€ˆ é†«ë—­ë¸˜???ê³¹ë­¹ 1åª›ì’–ì”¤ å¯ƒìŒìŠ¦
+                self.interact_by_xpath(
+                    '//android.widget.TextView[@text="{}°³ÀÇ ÁÁ¾Æ¿ä »óÇ°ÀÌ ÀÖ½À´Ï´Ù."]'.format(
+                        int(like_count[0]) - 1
+                    ),
+                    click=False
+                )  # ÁÁ¾Æ¿ä »óÇ° °³¼ö -1 È®ÀÎ
+
+            # ±âÁ¸ ÁÁ¾Æ¿ä »óÇ°ÀÌ 1°³ÀÎ °æ¿ì
             except:
-                self.interact_by_xpath('//android.widget.TextView[@text="?ê¾©ì­… é†«ë—­ë¸˜?????ê³¹ë­¹???ë†ë’¿?ëˆë–."]', click=False)  # é†«ë—­ë¸˜?ë·€ë¸³ ?ê³¹ë­¹???ë†ì“¬???ëˆê¶¡?ì„ë’— è‡¾ë©¸ë„ ?ëª„í…§ ?ëº¤ì”¤
+                self.interact_by_xpath(
+                    '//android.widget.TextView[@text="¾ÆÁ÷ ÁÁ¾Æ¿äÇÑ »óÇ°ÀÌ ¾ø½À´Ï´Ù."]',
+                    click=False
+                )  # ÁÁ¾Æ¿äÇÑ »óÇ°ÀÌ ¾øÀ½À» ¾È³»ÇÏ´Â ¹®±¸ ³ëÃâ È®ÀÎ
+
         except:
             self.capture_screen()
             self.assertEqual(0, 23)
@@ -206,26 +411,49 @@
             print(f"{sys._getframe(0).f_code.co_name} Passed")
             TCFG.is_passed = True
         finally:
-            self.interact_by_id('com.amorepacific.amorepacificmall:id/ib_bottom_home')  # ?ì„ë–’ ?â‰ªë€è«›???è¸°ê¾ªë“‰ ?ëŒ€â”ƒ
+            self.interact_by_id(
+                'com.amorepacific.amorepacificmall:id/ib_bottom_home'
+            )  # ÇÏ´Ü ¾×¼Ç¹Ù È¨ ¹öÆ° Å¬¸¯
 
-    def test_030_BEST_æ€¨ë“­ì‘€?ì„ë¦°(self):
+
+    def test_030_BEST_°øÀ¯ÇÏ±â(self):
         try:
-            ### ??###
-            self.interact_by_xpath('//*[@text="BEST"]')  # BEST ???ëŒ€â”ƒ
+            ### È¨ ###
+            self.interact_by_xpath('//*[@text="BEST"]')  # BEST ÅÇ Å¬¸¯
 
-            ### BEST ??###
-            ## ï§ë¡®ì”  æ´Ñ‰â„“????
-            self.interact_by_xpath('(//android.view.View[@resource-id="com.amorepacific.amorepacificmall:id/view_overlay"])[2]')  # ??è¸°ë‰ã ?ê³¹ë­¹ ?ëŒ€â”ƒ
+            ### BEST ÅÇ ###
+            ## ¸¹ÀÌ ±¸¸ÅÇÑ ÅÇ ##
+            self.interact_by_xpath(
+                '(//android.view.View[@resource-id="com.amorepacific.amorepacificmall:id/view_overlay"])[2]'
+            )  # µÎ ¹øÂ° »óÇ° Å¬¸¯
 
-            ### ?ê³¹ë­¹ ?ê³¸ê½­ ?ë¶¾ãˆƒ ###
-            prod_name = self.get_attri('(//android.view.View)[1]', 'text', By.XPATH)
+            ### »óÇ° »ó¼¼ È­¸é ###
+            prod_name = self.get_attri(
+                '(//android.view.View)[1]',
+                'text',
+                By.XPATH
+            )
             print(prod_name)
-            self.interact_by_xpath('//android.view.View[1]/android.widget.Button')  # æ€¨ë“­ì‘€?ì„ë¦° è¸°ê¾ªë“‰ ?ëŒ€â”ƒ
+
+            self.interact_by_xpath(
+                '//android.view.View[1]/android.widget.Button'
+            )  # °øÀ¯ÇÏ±â ¹öÆ° Å¬¸¯
+
             sleep(1.5)
 
-            ### æ€¨ë“­ì‘€?ì„ë¦° ?ë‰ì” ???ì•¹ë¾½ ###
-            self.interact_by_xpath('//android.widget.TextView[contains(@text, "{}")]'.format(prod_name), click=False)  # ?ê³¹ë­¹ï§??ì‡±íŠ‚ ?ëº¤ì”¤
-            TouchAction(TCFG.driver).tap(None, 550, 124, 1).perform()  # ?ê³—íŠ‚æ¿¡?æ€¨ë“­ì‘€ï§¡??ãƒªë¦°
+            ### °øÀ¯ÇÏ±â ·¹ÀÌ¾î ÆË¾÷ ###
+            self.interact_by_xpath(
+                '//android.widget.TextView[contains(@text, "{}")]'.format(prod_name),
+                click=False
+            )  # »óÇ°¸í ÀÏÄ¡ È®ÀÎ
+
+            TouchAction(TCFG.driver).tap(
+                None,
+                550,
+                124,
+                1
+            ).perform()  # ÁÂÇ¥·Î °øÀ¯Ã¢ ´İ±â
+
         except:
             self.capture_screen()
             self.assertEqual(0, 24)
@@ -233,4 +461,4 @@
             print(f"{sys._getframe(0).f_code.co_name} Passed")
             TCFG.is_passed = True
         finally:
-            TCFG.driver.back()  # BEST ??ì‘æ¿¡??ëŒ€ë£
+            TCFG.driver.back()  # BEST ÅÇÀ¸·Î ÀÌµ¿
